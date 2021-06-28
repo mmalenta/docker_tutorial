@@ -6,11 +6,11 @@
 - [2. Docker introduction](#2-docker-introduction)
   - [2.1 Basic components of Docker](#21-basic-components-of-docker)
   - [2.2 Building and deploying Docker containers](#22-building-and-deploying-docker-containers)
-- [3. Docker - build process deep dive](#3-docker---build-process-deep-dive)
+- [3. Docker build process deep dive](#3-docker-build-process-deep-dive)
   - [3.1 Build context](#31-build-context)
   - [3.2 Efficient and safe use of containers](#32-efficient-and-safe-use-of-containers)
   - [3.3 Reducing the size of containers](#33-reducing-the-size-of-containers)
-- [4. Docker - deployment deep dive](#4-docker---deployment-deep-dive)
+- [4. Docker deployment deep dive](#4-docker-deployment-deep-dive)
   - [4.1 Running containers efficiently and safely](#41-running-containers-efficiently-and-safely)
   - [4.2 Distributing containers](#42-distributing-containers)
 - [5. Summary and recommened resources](#5-summary-and-recommened-resources)
@@ -66,7 +66,8 @@ please let us know by
 We welcome all the suggestions on how to make this course more effective and
 efficient at introducing researchers to good containerisation practices.
 
-# 1. Containers introduction 
+# 1. Containers introduction
+**<h3>Section length: ~15 minutes</h3>**
 ## 1.1 What are containers
 ## 1.2 What containers are not
 ## 1.3 Why do you (and don't) need containers
@@ -536,7 +537,7 @@ build progress output? What about the size difference of each image (use
 you do that though, make sure you give it a go on your own and **do not 
 hesistate to ask if you run into any problems**!
 
-# 3. Docker - build process deep dive
+# 3. Docker build process deep dive
 
 **<h3>Section length: ~30 minutes</h3>**
 
@@ -613,53 +614,57 @@ buid?Is moving your Dockerfile to a separate, empty directory enough?  Do you
 need to use a `.dockerignore` file?
 
 ## 3.2 Efficient and safe use of containers
-Now let us go back to the build exercise from
-[Section 2.2](#22-building-and-deploying-docker-containers). You were asked to
-build 3 separate images. Did you notice anything interesting about the sizes
-of created images? Anything unexpected? My fesults surely are
 
-```docker
+* **Layers and their use**
 
-$ docker image ls
-REPOSITORY                 TAG                      IMAGE ID       CREATED          SIZE
-docker_intro               v0.1a                    3339fde08fc3   3 months ago     63.3MB
-docker_intro               v0.1b                    03b4f80d21dc   12 minutes ago   194MB
-docker_intro               v0.1c                    def68fd55a96   3 seconds ago    195MB
-```
+    Now let us go back to the build exercise from
+    [Section 2.2](#22-building-and-deploying-docker-containers). You were asked to
+    build 3 separate images. Did you notice anything interesting about the sizes
+    of created images? Anything unexpected? My fesults surely are
 
-The first Dockerfile (image tag v0.1a) does nothing else than just
-pulling a base image. The second recipe (v0.1b) installs the git package and all its 
-dependencies. That results in a relatively large image for achieving such a 
-simple task, as git uses more than 100MB of disk space. The third Dockerfile
-(v0.1c) illustrates how beginner Docker developers may attempt to remove packages.
-It looks like the package is removed correctly, as git can no longer be
-accessed inside the container. However, the size of the underlying
-image did not decrease. On the contrary, it is slightly larger, even though the removed
-packages should free around 100MB of space.
+    ```docker
 
-This is a result of how Docker handles images and their layers. Each of the FROM
-and RUN commands in the example Dockerfiles, creates a new layer. Each new layer
-contains the record of the differences introduced since the previous layer. Eventually,
-all the layers are combined into the final image. As a result, the layer installing the
-package is still included in the image. The final layer and its RUN instruction effectively
-hides the git command from the user. Additionally, this happens in a new layer, which
-is linked to the previous layers, increasing the image size.
+    $ docker image ls
+    REPOSITORY                 TAG                      IMAGE ID       CREATED          SIZE
+    docker_intro               v0.1a                    3339fde08fc3   3 months ago     63.3MB
+    docker_intro               v0.1b                    03b4f80d21dc   12 minutes ago   194MB
+    docker_intro               v0.1c                    def68fd55a96   3 seconds ago    195MB
+    ```
 
-Leaving such artefacts behind may not seem like a problem in the case of small
-packages. Modern pipelines however can depend on multiple executables, libraries and
-intermediate files. The size of the image can grow quickly if these are not removed
-properly. This can put stress on storage and increase push and pull times to and from
-a repository. Not removing intermediate products properly can also have important
-security implications. Any potential files containing login details or other sensitive
-information that are added into the image and not removed in the same layer, can then
-be viewed by anyone having an access to the image. In such a situation, an improperly
-built image can not only make the development more cumbersome, but can potentially
-compromise multiple systems.
+    [The first Dockerfile](/02_docker_into/Dockerfile.02a) (image tag v0.1a) does nothing else than just
+    pulling a base image. [The second recipe](02_docker_into/Dockerfile.02b) (v0.1b) installs the git package and all its 
+    dependencies. That results in a relatively large image for achieving such a 
+    simple task, as git uses more than 100MB of disk space. 
+    [The third Dockerfile](02_docker_into/Dockerfile.02c)
+    (v0.1c) illustrates how beginner Docker developers may attempt to remove packages.
+    It looks like the package is removed correctly, as git can no longer be
+    accessed inside the container. However, the size of the underlying
+    image did not decrease. On the contrary, it is slightly larger, even though the removed
+    packages should free around 100MB of space.
 
-**Exercise (3 minutes):** based on what we have learned about layers so far,
-could you think of an easy way of ensuring that the package is **actually**
-removed? When you have the answer, compare it with the `Dockerfile.03`.
-**Extra:** what are advantegs and disadvantages of such a solution?
+    This is a result of how Docker handles images and their layers. Each of the FROM
+    and RUN commands in the example Dockerfiles, creates a new layer. Each new layer
+    contains the record of the differences introduced since the previous layer. Eventually,
+    all the layers are combined into the final image. As a result, the layer installing the
+    package is still included in the image. The final layer and its RUN instruction effectively
+    hides the git command from the user. Additionally, this happens in a new layer, which
+    is linked to the previous layers, increasing the image size.
+
+    Leaving such artefacts behind may not seem like a problem in the case of small
+    packages. Modern pipelines however can depend on multiple executables, libraries and
+    intermediate files. The size of the image can grow quickly if these are not removed
+    properly. This can put stress on storage and increase push and pull times to and from
+    a repository. Not removing intermediate products properly can also have important
+    security implications. Any potential files containing login details or other sensitive
+    information that are added into the image and not removed in the same layer, can then
+    be viewed by anyone having an access to the image. In such a situation, an improperly
+    built image can not only make the development more cumbersome, but can potentially
+    compromise multiple systems.
+
+    **Exercise (3 minutes):** based on what we have learned about layers so far,
+    could you think of an easy way of ensuring that the package is **actually**
+    removed? When you have the answer, compare it with the `Dockerfile.03`.
+    **Extra:** what are advantegs and disadvantages of such a solution?
 
 ## 3.3 Reducing the size of containers
 
@@ -683,22 +688,100 @@ removed? When you have the answer, compare it with the `Dockerfile.03`.
     imum required ecosystem, use a basic official image if available (e.g. cuda:9.2-base
     vs cuda:9.2-devel) and install all the necessary packages and libraries by hand.
 
-* **Use multistage builds.**
+* **Use multi-stage builds.**
 
-    Small and clean Docker images can be maintained with the
-    help of multi–stage builds. This approach simplifies the build process when external
-    packages and libraries are required, with no need for complex Dockerfiles and scripts.
-    When used properly, they can not only keep the size of the final image down, but also
-    reduce the build time and simplify the maintenance of different image versions. A
-    simple example of a multistage build is shown in the right panel of the Figure 1. In this
-    workflow the first named stage is created using the FROM ... as ...
-    keyword.
-    All the necessary tools and files are downloaded in this stage and the code is compiled.
-    The second FROM stage can use different base image and copies only the relevant parts of
-    the first stage. In such a workflow, the development libraries have to be used during the
-    first-stage compilation only and the second stage can rely on lighter runtime libraries.
+    Small and clean Docker images can be maintained with the help of
+    multi-stage builds. This approach simplifies the build process when
+    external packages and libraries are required, with no need for overly
+    complex Dockerfiles and external scripts. When used properly, they can not
+    only keep the size of the final images down, but also reduce the build time
+    and simplify the maintenance of different image versions.
+    [Dockerfile.03multi](03_docker_build_deep/Dockerfile.03multi) contains a
+    simple use example use of multi-stage builds. It is also shown in the code
+    snipped below
 
-# 4. Docker - deployment deep dive
+    ```docker
+    FROM ubuntu:18.04 as downloader
+
+    WORKDIR /software
+
+    RUN apt update && apt -y install git \ 
+        && git clone https://github.com/mmalenta/docker_tutorial
+
+    FROM ubuntu:18.04
+
+    WORKDIR /software
+    COPY --from=downloader /software/docker_tutorial ./docker_tutorial
+    ```
+    Unlike all the previous Dockerfiles we have worked with, this one has two
+    `FROM` instructions. Each `FROM` line starts a new build stage,
+    independent of the previous one.
+    All the necessary tools and files are downloaded in the first stage.
+    The second `FROM` stage starts with a clean sheet, no matter how many
+    things were installed in the previous stage. Every stage can use a
+    different base image (here we use the same image for both stages, but you
+    could use something else) and copies only the required parts of the first
+    stage. Here we copy the contents if this workshop's git repository.
+    At the end, we have a complete image, with all the necessary files
+    installed and `git` package correctly removed. Additionally we do not have
+    to worry about installing and removing software in the same line as
+    presented 
+    [in the first Dockerfile of this section](03_docker_build_deep/Dockerfile.03).
+    
+    ```docker
+    REPOSITORY                 TAG                      IMAGE ID       CREATED          SIZE
+    docker_intro               v0.1a                    3339fde08fc3   3 months ago     63.3MB
+    docker_intro               v0.1b                    03b4f80d21dc   12 minutes ago   194MB
+    docker_intro               v0.1c                    def68fd55a96   3 seconds ago    195MB
+    docker_intro               v0.1multi                f5309e4e946f   About a minute ago   63.4MB 
+    ```
+    The increase in the image size is caused by the actual files we have
+    downloaded from this workshop's repository.
+
+    When we use a multi-stage workflow, we not only limit the number of files
+    present in the final image, but can also benefit from running ligher
+    runtime libraries only in the second stage and using heavier development
+    libraries while compiling our software in the first stage.
+
+    **Warning:** multi-stage builds were introduced in 2017, so if you have a
+    version of Docker older than that, you will not be able to build the above
+    image! As before, we urge you to update your Docker to the most recent
+    version on security grounds!
+
+    We are not limited to using only 2 stages. You can use as many stages as
+    make sense in your development workflow. You may find it necessary to
+    have one stage for the initial installation, the next stage for moving the
+    build products around and an additional stage for including some test data.
+
+    We also no not have to use all of the stages during our build
+
+    ```docker
+    $ docker build --target downloader -f 03_docker_build_deep/Dockerfile.03multi --tag docker_intro:v0.1multi_first .
+    ```
+    Here we instruct Docker to finish the build process at the end of the first
+    stage. We end up with the same image contents (but not the same image) as
+    when using
+    [Dockerfile that installs git and pulls the repository](02_docker_into/Dockerfile.02b).
+    That is why it is essential to name our build stages: not only we use these
+    names to refer to the individual stages inside our Dockerfile, but can
+    also use them with our `build` command.
+
+
+    **Exercise (5 minutes):** add an extra stage to the `Dockerfile0.3multi`.
+    It does not have to do anything fancy (`echo Hello World` will suffice).
+    Try different variations of build command with different build targets.
+    Are the results as you expected?
+
+    As multi-stage builds are now the recommended way of building more complex
+    images, we are not going to cover
+    [**the builder pattern**](https://blog.alexellis.io/mutli-stage-docker-builds/).
+    You may however still come across it, especially when working on some
+    older systems that do not have new enough version of Docker installed. In
+    your spare time, compare the builder patter to the multi-stage builds.
+    Which one do you find easier to follow and understand (you are not expected
+    to answer "multi-stage" builds, just because we covered them here)?
+
+# 4. Docker deployment deep dive
 
 **<h3>Section length: ~30 minutes</h3>**
 
@@ -709,6 +792,8 @@ removed? When you have the answer, compare it with the `Dockerfile.03`.
 * **Rootless mode**
 
 * **Safe networking**
+
+* **Cleaning up**
 
 ## 4.2 Distributing containers
 
