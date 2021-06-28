@@ -1,30 +1,23 @@
 - [0. Logistics](#0-logistics)
-    - [**Section length: ~5 minutes**](#section-length-5-minutes)
 - [1. Containers introduction](#1-containers-introduction)
   - [1.1 What are containers](#11-what-are-containers)
   - [1.2 What containers are not](#12-what-containers-are-not)
   - [1.3 Why do you (and don't) need containers](#13-why-do-you-and-dont-need-containers)
 - [2. Docker introduction](#2-docker-introduction)
-    - [**Section length: ~45 minutes**](#section-length-45-minutes)
   - [2.1 Basic components of Docker](#21-basic-components-of-docker)
-    - [**Let's examine the command and the generated output step by step.**](#lets-examine-the-command-and-the-generated-output-step-by-step)
-    - [**There are a few things we can do after running this command**](#there-are-a-few-things-we-can-do-after-running-this-command)
   - [2.2 Building and deploying Docker containers](#22-building-and-deploying-docker-containers)
-    - [**Buid a simple Docker image**](#buid-a-simple-docker-image)
 - [3. Docker - build process deep dive](#3-docker---build-process-deep-dive)
-    - [**Section length: ~30 minutes**](#section-length-30-minutes)
   - [3.1 Build context](#31-build-context)
   - [3.2 Efficient and safe use of containers](#32-efficient-and-safe-use-of-containers)
   - [3.3 Reducing the size of containers](#33-reducing-the-size-of-containers)
 - [4. Docker - deployment deep dive](#4-docker---deployment-deep-dive)
-    - [**Section length: ~30 minutes**](#section-length-30-minutes-1)
   - [4.1 Running containers efficiently and safely](#41-running-containers-efficiently-and-safely)
   - [4.2 Distributing containers](#42-distributing-containers)
 - [5. Summary and recommened resources](#5-summary-and-recommened-resources)
 
 # 0. Logistics
 
-### **Section length: ~5 minutes**
+**<h3>Section length: ~5 minutes</h3>**
 
 **Course organisation:** This course is designed to be a standalone, 1.5-2h
 tutorial / workshop. It is designed with Docker novices in mind and as such
@@ -79,7 +72,7 @@ efficient at introducing researchers to good containerisation practices.
 ## 1.3 Why do you (and don't) need containers
 
 # 2. Docker introduction
-### **Section length: ~45 minutes**
+**<h3>Section length: ~45 minutes</h3>**
 ## 2.1 Basic components of Docker
 Now that we covered the basic ideas behind containers, it is time to focus
 on one technology in particular - Docker.
@@ -137,7 +130,7 @@ For more examples and ideas, visit:
 
 ```
 
-### **Let's examine the command and the generated output step by step.**
+**<h3>Let's examine the command and the generated output step by step.</h3>**
 
 
 * **The very first line**
@@ -190,7 +183,7 @@ For more examples and ideas, visit:
     then send to the terminal for us to see. That means we have **successfully
     created and run our very first Docker container**.
 
-### **There are a few things we can do after running this command**
+**<h3>There are a few things we can do after running this command</h3>**
 
 * **Examine the list of locally stored images**
 
@@ -389,7 +382,7 @@ and that is what we are going to do now.
 
 
 
-### **Buid a simple Docker image**
+ **<h3>Buid a simple Docker image</h3>**
 
   The development of every Docker image starts with a Dockerfile. It is a 
   recipe that contains a series of commands for installing and configuring
@@ -545,7 +538,7 @@ hesistate to ask if you run into any problems**!
 
 # 3. Docker - build process deep dive
 
-### **Section length: ~30 minutes**
+**<h3>Section length: ~30 minutes</h3>**
 
 ## 3.1 Build context
 It is quite common for projects to keep their code and data together. It is not
@@ -707,7 +700,7 @@ removed? When you have the answer, compare it with the `Dockerfile.03`.
 
 # 4. Docker - deployment deep dive
 
-### **Section length: ~30 minutes**
+**<h3>Section length: ~30 minutes</h3>**
 
 ## 4.1 Running containers efficiently and safely
 
