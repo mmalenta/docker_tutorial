@@ -1,0 +1,6 @@
+FROM ubuntu:18.04
+
+WORKDIR /software
+
+RUN apt update && apt -y install git \ 
+    && git clone https://github.com/mmalenta/docker_tutorial

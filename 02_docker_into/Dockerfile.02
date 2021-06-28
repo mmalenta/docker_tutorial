@@ -1,0 +1,8 @@
+FROM ubuntu:18.04
+
+WORKDIR /software
+
+RUN apt update && apt -y install git \ 
+    && git clone https://github.com/mmalenta/docker_tutorial
+
+CMD ./docker_tutorial/02_docker_into/scripts/hello_docker.sh
