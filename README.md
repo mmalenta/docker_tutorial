@@ -5,19 +5,19 @@
   - [1.3 Why do you (and don't) need containers](#13-why-do-you-and-dont-need-containers)
 - [2. Docker introduction](#2-docker-introduction)
   - [2.1 Basic components of Docker](#21-basic-components-of-docker)
-  - [2.2 Building and deploying Docker containers](#22-building-and-deploying-docker-containers)
+  - [2.2 Building Docker containers](#22-building-docker-containers)
 - [3. Docker build process deep dive](#3-docker-build-process-deep-dive)
   - [3.1 Build context](#31-build-context)
-  - [3.2 Efficient and safe use of containers](#32-efficient-and-safe-use-of-containers)
+  - [3.2 Efficient and safe build of containers](#32-efficient-and-safe-build-of-containers)
   - [3.3 Reducing the size of containers](#33-reducing-the-size-of-containers)
 - [4. Docker deployment deep dive](#4-docker-deployment-deep-dive)
   - [4.1 Running containers efficiently and safely](#41-running-containers-efficiently-and-safely)
   - [4.2 Distributing containers](#42-distributing-containers)
-- [5. Summary and recommened resources](#5-summary-and-recommened-resources)
+- [5. Summary and recommended resources](#5-summary-and-recommended-resources)
 
 # 0. Logistics
 
-**<h3>Section length: ~5 minutes</h3>**
+**<h3>Section length: 5 minutes</h3>**
 
 **Course organisation:** This course is designed to be a standalone, 1.5-2h
 tutorial / workshop. It is designed with Docker novices in mind and as such
@@ -33,7 +33,27 @@ Further reading for more advanced users and those who would like to go beyond
 the scope of this course is given in
 [Section 5.](#5-summary-and-recommened-resources) 
 
+**Course timeline:**
 
+Section | Section Name | Length
+--------|--------------|-------
+0 | Logistics | **5 minutes**
+1 | Containers Introduction | **5 minutes**
+1.1 | What are containers | 2 minutes
+1.2 | What containers are not | 2 minutes
+1.3 | Why do you (and don't) need containers | 1 minute
+2 | Docker introduction | **40 minutes**
+2.1 | Basic components of Docker | 20 minutes
+2.2 | Building Docker containers | 20 minutes
+3 | Docker build process deep dive | **35 minutes**
+3.1 | Build context | 5 minutes
+3.2 | Efficient and safe build of containers | 10 minutes
+3.3 | Reducing the size of containers | 20 minutes
+4 | Docker deployment deep dive | **30 minutes**
+4.1 | Running containers efficiently and safely | 20 minutes
+4.2 | Distributing containers | 10 minutes
+5 | Summary and recommended resources | **5 minutes**
+&nbsp; | **Total** | **120 minutes**
 
 **Code and lesson notes:** This README file serves as a master document for
 the entire course. All the code is presented in the form of snippets in here.
@@ -84,14 +104,23 @@ We welcome all the suggestions on how to make this course more effective and
 efficient at introducing researchers to good containerisation practices.
 
 # 1. Containers introduction
-**<h3>Section length: ~15 minutes</h3>**
+**<h3>Section length: 5 minutes</h3>**
 ## 1.1 What are containers
+**<h3>Section length: 2 minutes</h3>**
+
 ## 1.2 What containers are not
+**<h3>Section length: 2 minutes</h3>**
+
 ## 1.3 Why do you (and don't) need containers
+**<h3>Section length: 1 minute</h3>**
+
 
 # 2. Docker introduction
-**<h3>Section length: ~45 minutes</h3>**
+**<h3>Section length: 40 minutes</h3>**
 ## 2.1 Basic components of Docker
+
+**<h3>Section length: 20 minutes</h3>**
+
 Now that we covered the basic ideas behind containers, it is time to focus
 on one technology in particular - Docker.
 Since its initial release in 2013, Docker has been widely adopted in many areas of
@@ -149,7 +178,6 @@ For more examples and ideas, visit:
 ```
 
 **<h3>Let's examine the command and the generated output step by step.</h3>**
-
 
 * **The very first line**
   
@@ -381,7 +409,9 @@ For more examples and ideas, visit:
     the `run` command again.
 
 
-## 2.2 Building and deploying Docker containers
+## 2.2 Building Docker containers
+
+**<h3>Section length: 20 minutes</h3>**
 
 We now know the basics of managing Docker images and containers. We know we
 can download an existing image and launch a container based on it. That might
@@ -556,9 +586,12 @@ hesistate to ask if you run into any problems**!
 
 # 3. Docker build process deep dive
 
-**<h3>Section length: ~30 minutes</h3>**
+**<h3>Section length: 35 minutes</h3>**
 
 ## 3.1 Build context
+
+**<h3>Section length: 5 minutes</h3>**
+
 It is quite common for projects to keep their code and data together. It is not
 a problem if your codebase provides a few .csv files or few kiB of data.
 However, the size of your dataset can become a significant problem if there are
@@ -630,7 +663,9 @@ size of your build context. How much data do you need available during the
 buid?Is moving your Dockerfile to a separate, empty directory enough?  Do you
 need to use a `.dockerignore` file?
 
-## 3.2 Efficient and safe use of containers
+## 3.2 Efficient and safe build of containers
+
+**<h3>Section length: 10 minutes</h3>**
 
 * **Layers and their use**
 
@@ -684,6 +719,8 @@ need to use a `.dockerignore` file?
     **Extra:** what are advantegs and disadvantages of such a solution?
 
 ## 3.3 Reducing the size of containers
+
+**<h3>Section length: 20 minutes</h3>**
 
 * **Use only packages you need.**
 
@@ -800,9 +837,11 @@ need to use a `.dockerignore` file?
 
 # 4. Docker deployment deep dive
 
-**<h3>Section length: ~30 minutes</h3>**
+**<h3>Section length: 30 minutes</h3>**
 
 ## 4.1 Running containers efficiently and safely
+
+**<h3>Section length: 20 minutes</h3>**
 
 Here we provide just a brief overview of the most essential parts of Docker
 security you may need to consider as a beginner user. For a more detailed
@@ -1033,6 +1072,8 @@ information please consult
 
 ## 4.2 Distributing containers
 
+**<h3>Section length: 10 minutes</h3>**
+
 * [**Docker Hub repository**](https://hub.docker.com)
 
     Contaienrs offer a great way to create a reproducible development and work
@@ -1149,9 +1190,9 @@ information please consult
     repositories? How can you make sure that you and the users of your software
     can access it quickly and easily?
 
-# 5. Summary and recommened resources
+# 5. Summary and recommended resources
 
-**<h3>Section length: ~5 minutes</h3>**
+**<h3>Section length: 5 minutes</h3>**
 
 **Free resources:**
 
