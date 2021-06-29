@@ -1,0 +1,12 @@
+FROM ubuntu:18.04 as downloader
+
+WORKDIR /software
+
+RUN apt update && apt -y install git \ 
+    && git clone https://github.com/mmalenta/docker_tutorial
+
+FROM ubuntu:18.04
+
+WORKDIR /software
+COPY --from=downloader /software/docker_tutorial ./docker_tutorial
+COPY test_data.dat ./
