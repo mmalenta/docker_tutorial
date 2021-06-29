@@ -1,10 +1,4 @@
 - [0. Logistics](#0-logistics)
-- [1. Containers introduction](#1-containers-introduction)
-  - [1.1 What are containers](#11-what-are-containers)
-  - [1.2 What containers are not](#12-what-containers-are-not)
-  - [1.3 Why do you (and don't) need containers](#13-why-do-you-and-dont-need-containers)
-- [2. Docker introduction](#2-docker-introduction)
-  - [2.1 Basic components of Docker](#21-basic-components-of-docker)
   - [2.2 Building and deploying Docker containers](#22-building-and-deploying-docker-containers)
 - [3. Docker build process deep dive](#3-docker-build-process-deep-dive)
   - [3.1 Build context](#31-build-context)
@@ -33,6 +27,8 @@ Further reading for more advanced users and those who would like to go beyond
 the scope of this course is given in
 [Section 5.](#5-summary-and-recommened-resources) 
 
+
+
 **Code and lesson notes:** This README file serves as a master document for
 the entire course. All the code is presented in the form of snippets in here.
 Each section has a corresponding directory containing the full code and
@@ -40,6 +36,18 @@ separate lesson files with information relevant to just that given section.
 These files do not contain any additional information and are used to separate
 the content into more logical chunks. These directories also contain the
 multimedia files, such as images, used in the corresponding course sections.
+
+**Conventions used in this document:**
+
+* [internal links are normal](README.md)
+* [**external links are bold**](https://example.com)
+
+
+* ```
+  long(er) code or short commands that are just being
+  introduced use code blocks
+  ```
+* `short commands that are not new and file paths` are inlined
 
 **Software installation:** To get the most out of this course it is essential
 that you try the examples and run the code provided. To do that, you will
@@ -62,7 +70,7 @@ your interest [using this form](https://example.com).**
 **Bugs and suggestions:** If you find a mistake in the course, be it a code
 mistake or a small typo, or have suggestiosn on how to improve this course
 please let us know by
-[starting a new issue](https://github.com/mmalenta/docker_tutorial/issues/new).
+[**starting a new issue**](https://github.com/mmalenta/docker_tutorial/issues/new).
 We welcome all the suggestions on how to make this course more effective and
 efficient at introducing researchers to good containerisation practices.
 
@@ -726,7 +734,7 @@ need to use a `.dockerignore` file?
     installed and `git` package correctly removed. Additionally we do not have
     to worry about installing and removing software in the same line as
     presented 
-    [in the first Dockerfile of this section](03_docker_build_deep/Dockerfile.03).
+    [**in the first Dockerfile of this section**](03_docker_build_deep/Dockerfile.03).
     
     ```docker
     REPOSITORY                 TAG                      IMAGE ID       CREATED          SIZE
@@ -787,9 +795,38 @@ need to use a `.dockerignore` file?
 
 ## 4.1 Running containers efficiently and safely
 
+Here we provide just a brief overview of the most essential parts of Docker
+security you may need to consider as a beginner user. For a more detailed
+information please consult 
+[**Docker security documentation**](https://docs.docker.com/engine/security/)
+
 * **Changing user**
 
-* **Rootless mode**
+* [**Rootless mode**](https://docs.docker.com/engine/security/rootless/)
+
+    Running the "standard" Docker daemon requires root privileges. Unless you
+    are in charge of the computational resources, you may not be able to
+    install it on your own and your IT personnel might not be willing to do
+    this either due to various concerns.
+
+    With the most recent versions of Docker (Docker Engine v20.10 released at
+    the end of 2020 has a fully-matured support) it is possible to run the
+    Docker daemon without root privileges. It is now possible to install and
+    use Docker without the need for root installation - you are running your
+    own personal Docker deployment.
+
+    By default and by a concious security desing decisions, 
+    [**rootles mode comes with some limitations**](https://docs.docker.com/engine/security/rootless/#known-limitations). For example, you can no longer use privileged
+    ports (ports with numbers < 1024). This can affect workflows that depend
+    on the access to these ports, such as webservers. It is still possible to
+    expose the privileged ports if absolutely necessary, which requires an
+    account with root privileges. 
+
+    Even if you have root privileges on your machine, consider running Docker
+    in rootless mode if you do not require ant advanced configuration options
+    made available through the "full root" version only. This effectively
+    further separates your workspace from the inner components of your 
+    host's operating system.
 
 * **Safe networking**
 
