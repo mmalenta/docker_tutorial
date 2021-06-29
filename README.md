@@ -806,7 +806,97 @@ security you may need to consider as a beginner user. For a more detailed
 information please consult 
 [**Docker security documentation**](https://docs.docker.com/engine/security/)
 
+* **Making data available inside your containers**
+
+
+
 * **Changing user**
+
+    Launching our container the way we did in
+    [Section 2.1](#21-basic-components-of-docker)
+    may seem innocent enough, but comes with a **serious security problem**.
+
+    **Exercise (5 minutes):** use one of the images we built in
+    [Section 3.2](#32-efficient-and-safe-use-of-containers) and launch a
+    container in interactive mode using the command below
+
+    ```docker
+    docker container run -it --rm docker_intro:v0.1multi_first
+    ```
+    Anything worrying at the command line prompt? What if you run `id`?
+
+    If I run this container, I see this at my command line
+    (you will most likely see a different ID, as it is the contaiener ID)
+
+    ```docker
+    root@cf3178c55928:/software# id
+    uid=0(root) gid=0(root) groups=0(root)
+    ```
+
+    **We are running as root inside the container!** If you are not careful
+    (or not used to having root privileges), you can damage your containerised
+    environment or even your host operating system. Consider a simple, example,
+    not necessarily malicious - this could easily be a result of used mistyping
+    or copying a command wrong
+
+    **!! DO NOT EXECUTE THE FOLLOWING CODE ON YOUR COMPUTER !!**
+
+    **I TAKE NO RESPONSIBILITY IF YOU DO AND DAMAGE YOUR HOST OS**
+    ```bash
+    docker container run -it --rm -v /:/software docker_intro:v0.1multi_first
+    root@a90f853bf2b4:/software# ls -l
+    drwxr-xr-x   2 root root  4096 Jun 17 15:07 bin
+    drwxr-xr-x   3 root root  4096 Jun 25 07:48 boot
+    drwxrwxr-x   2 root root  4096 Aug 12  2018 cdrom
+    drwxr-xr-x  21 root root  4840 Jun 29 10:06 dev
+    ...
+    root@0a90f853bf2b4:/software# touch ./bin/hello
+    ```
+
+    Here we have made a mistake and mounted our **host root system** to the 
+    containers `/software` directory. Because I now run as a `root` user inside
+    the container, I can make changes to the host system files: I can add some
+    (possibly malicious) files or I can remove some (possibly vital) files.
+
+    It is therefore essential for security reasons to specify a non-root user
+    when launching a Docker container with the help of `--user` option. We can
+    use the option to specify which user form the host OS to use. Docker and
+    your host OS share the list of user IDs and group IDs, even though the do
+    not share the usernames (as we shall see in the next example). Now we can
+    run our buggy command in a slightly more secure manner
+
+    ```bash
+    docker container run --user 1000:1000 -it --rm -v /:/software docker_intro:v0.1multi_first
+    groups: cannot find name for group ID 1000
+    I have no name!@75523ff70e1d:/software$ ls
+    drwxr-xr-x   2 root root  4096 Jun 17 15:07 bin
+    drwxr-xr-x   3 root root  4096 Jun 25 07:48 boot
+    drwxrwxr-x   2 root root  4096 Aug 12  2018 cdrom
+    drwxr-xr-x  21 root root  4840 Jun 29 10:06 dev
+    ...
+    I have no name!@75523ff70e1d:/software$ touch ./bin/hello
+    touch: cannot touch './bin/hello': Permission denied
+    ```
+    We have now successfully launched the container with user ID 1000 and
+    group ID 1000 (the format is `--user [user ID]:[group ID]`). As we have not
+    created this user inside the container, Docker has no idea who that user
+    exactly, but we can still pefrorm various tasks with the same permissions
+    as the original user on the host OS. Most importantly, we are no longer
+    allowed to mess with the host OS root directory, as seen above with the
+    `Permission denied` statememt.
+
+    **Make sure you never launch any containers without specifying a non-root
+    user!** It may seem as an unnecessary extra step, especcialy if you just
+    "quickly run something for some tests", but adding this short and easy
+    option can significantly reduce possible malicious attack vectors and also
+    limit the consequences of any mistakes you or your fellow Docker users can
+    (and will) make.
+
+    If you expect to run Docker on a regular basis in production environment,
+    e.g. as a webserver or a real-time machine learning pipeline, consider
+    creating a separate user with privileges limited to just parts required
+    for your workflow and then always stick to this user when launching your
+    containers.
 
 * [**Rootless mode**](https://docs.docker.com/engine/security/rootless/)
 
