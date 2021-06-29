@@ -12,7 +12,7 @@
   - [3.3 Reducing the size of containers](#33-reducing-the-size-of-containers)
 - [4. Docker deployment deep dive](#4-docker-deployment-deep-dive)
   - [4.1 Running containers efficiently and safely](#41-running-containers-efficiently-and-safely)
-  - [4.2 Distributing containers](#42-distributing-containers)
+  - [4.2 Distributing images](#42-distributing-images)
 - [5. Summary and recommended resources](#5-summary-and-recommended-resources)
 
 # 0. Logistics
@@ -1066,17 +1066,14 @@ information please consult
     further separates your workspace from the inner components of your 
     host's operating system.
 
-* **Safe networking**
- 
 
-
-## 4.2 Distributing containers
+## 4.2 Distributing images
 
 **<h3>Section length: 10 minutes</h3>**
 
 * [**Docker Hub repository**](https://hub.docker.com)
 
-    Contaienrs offer a great way to create a reproducible development and work
+    Containers offer a great way to run a reproducible development and work
     environments. We have build multiple images over the course of this
     workshop and at this stage we alone have access to this reproducibility.
     If however you create an image that is used not only by you, but by other
