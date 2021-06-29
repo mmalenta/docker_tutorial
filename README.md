@@ -1,4 +1,10 @@
 - [0. Logistics](#0-logistics)
+- [1. Containers introduction](#1-containers-introduction)
+  - [1.1 What are containers](#11-what-are-containers)
+  - [1.2 What containers are not](#12-what-containers-are-not)
+  - [1.3 Why do you (and don't) need containers](#13-why-do-you-and-dont-need-containers)
+- [2. Docker introduction](#2-docker-introduction)
+  - [2.1 Basic components of Docker](#21-basic-components-of-docker)
   - [2.2 Building and deploying Docker containers](#22-building-and-deploying-docker-containers)
 - [3. Docker build process deep dive](#3-docker-build-process-deep-dive)
   - [3.1 Build context](#31-build-context)
@@ -42,8 +48,8 @@ multimedia files, such as images, used in the corresponding course sections.
 * [internal links are normal](README.md)
 * [**external links are bold**](https://example.com)
 
-
-* ```
+* 
+  ```
   long(er) code or short commands that are just being
   introduced use code blocks
   ```
