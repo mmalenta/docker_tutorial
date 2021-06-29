@@ -63,7 +63,10 @@ and follow the instructions to install Docker for your operating system.
 This course will be focused on the introductory Docker uses and is expected
 to work on all the supported platforms. We recommend you **try to install the
 software at least few days before the workshop**, so that you have all the
-required software on the day.
+required software on the day. We also recommend that you 
+[**create a Docker Hub account**](https://hub.docker.com/signup) for the last
+session on this workshop.
+
 
 **Installation drop-in session:** Even though Docker is now officialy supported
 on the most popular Operating Systems, as with any software there can be some
@@ -817,7 +820,7 @@ information please consult
     First however, let's createa 512MiB test data file in the root workshop
     directory
     ```bash
-    dd if=/dev/urandom of=test_data.dat bs=32M count=16
+    $ dd if=/dev/urandom of=test_data.dat bs=32M count=16
     ```
 
     The new Dockerfile executes the same instructions as in the previous
@@ -850,7 +853,7 @@ information please consult
     software directory, we can see that our `test_data.dat` file is present.
 
     ```bash
-    docker container run --rm docker_intro:v0.1infile ls -l
+    $ docker container run --rm docker_intro:v0.1infile ls -l
     ```
 
     This can work if you have a small dataset, but what happens if you have
@@ -871,7 +874,7 @@ information please consult
     additional options that *mount* the data inside the container
 
     ```docker
-    docker container run --rm --mount type=bind,source=$(pwd)/test_data.dat,target=/software/inside_data.dat docker_intro:v0.1multi ls -l
+    $ docker container run --rm --mount type=bind,source=$(pwd)/test_data.dat,target=/software/inside_data.dat docker_intro:v0.1multi ls -l
     total 524296
     drwxr-xr-x 5 root root      4096 Jun 28 20:12 docker_tutorial
     -rw-rw-r-- 1 1000 1000 536870896 Jun 29 12:06 inside_data.dat
@@ -921,7 +924,7 @@ information please consult
     container in interactive mode using the command below
 
     ```docker
-    docker container run -it --rm docker_intro:v0.1multi_first
+    $ docker container run -it --rm docker_intro:v0.1multi_first
     ```
     Anything worrying at the command line prompt? What if you run `id`?
 
@@ -943,7 +946,7 @@ information please consult
 
     **I TAKE NO RESPONSIBILITY IF YOU DO AND DAMAGE YOUR HOST OS**
     ```bash
-    docker container run -it --rm -v /:/software docker_intro:v0.1multi_first
+    $ docker container run -it --rm -v /:/software docker_intro:v0.1multi_first
     root@a90f853bf2b4:/software# ls -l
     drwxr-xr-x   2 root root  4096 Jun 17 15:07 bin
     drwxr-xr-x   3 root root  4096 Jun 25 07:48 boot
@@ -966,7 +969,7 @@ information please consult
     run our buggy command in a slightly more secure manner
 
     ```bash
-    docker container run --user 1000:1000 -it --rm -v /:/software docker_intro:v0.1multi_first
+    $ docker container run --user 1000:1000 -it --rm -v /:/software docker_intro:v0.1multi_first
     groups: cannot find name for group ID 1000
     I have no name!@75523ff70e1d:/software$ ls
     drwxr-xr-x   2 root root  4096 Jun 17 15:07 bin
@@ -1012,8 +1015,8 @@ information please consult
     own personal Docker deployment.
 
     By default and by a concious security desing decisions, 
-    [**rootles mode comes with some limitations**](https://docs.docker.com/engine/security/rootless/#known-limitations). For example, you can no longer use privileged
-    ports (ports with numbers < 1024). This can affect workflows that depend
+    [**rootles mode comes with some limitations**](https://docs.docker.com/engine/security/rootless/#known-limitations). For example, you can no longer use [**privileged
+    ports**](https://www.w3.org/Daemon/User/Installation/PrivilegedPorts.html) (ports with numbers < 1024). This can affect workflows that depend
     on the access to these ports, such as webservers. It is still possible to
     expose the privileged ports if absolutely necessary, which requires an
     account with root privileges. 
@@ -1025,46 +1028,130 @@ information please consult
     host's operating system.
 
 * **Safe networking**
+ 
 
-* **Cleaning up**
 
 ## 4.2 Distributing containers
 
-* **Reliable Docker registry.**
+* [**Docker Hub repository**](https://hub.docker.com)
 
-    One of the most popular ways of sharing Docker images is through the Docker Hub
-    repository service. Although it is a convenient and, with the basic features, free way of
-    sharing containerised software, it comes with drawbacks. First is the need to push and
-    pull the containers to non-local Docker Hub servers. This might not a major concern
-    for researchers using a single compute node. However, performing these actions can
-    become difficult when dozens of compute nodes are in use. Recently, important changes
-    are also being introduced to the Docker Hub user policy, which severely limit the free
-    accounts. One of the more significant ones are the plans to introduce a strict retention
-    policy, with images removed after 6 months from receiving the last update. These have
-    so far been put on hold. Independently of their final form, these plans underline a flaw
-    in relying solely on publicly available free repositories for software distribution and
-    retention.
+    Contaienrs offer a great way to create a reproducible development and work
+    environments. We have build multiple images over the course of this
+    workshop and at this stage we alone have access to this reproducibility.
+    If however you create an image that is used not only by you, but by other
+    members of your research team or even wider audience - you will need a way
+    to share it.
 
-    Deploying and maintaining a private Docker registry can be an easy and cheap
-    alternative. Even though time consuming at the beginning, it can save a lot of resources
-    over the years. Dedicated disk space has to be put aside, but depending on the needs this
-    can be as small pool as few GBs in the least demanding cases. The most basic registry
-    can be run with a single command. Efficient registry, capable of supporting research
-    projects will have to be properly configured though. Multiple storage, networking and
-    driver options have to be carefully explored and implemented. This is the most critical
-    part of deploying the registry, as the initial choices will affect all the future operations.
-    Successful registry operations are not limited to the initial deployment only. When
-    the registry is used at the early development stages, there can be multiple push/pull
-    requests a day. If not resolved properly, this can result in the registry running out of
-    resources. This behaviour stems from the way the registry treats new images. If a layer
-    is changed, the registry does not remove or even overwrite the old layer – it keeps both
-    layers, even if the exactly same image tag is used. This can be a desired behaviour
-    – it provides an access to different states of the image, providing a version control
-    mechanism. If the new image version is meant to replace the old one, fully removing
-    the unnecessary layers is a complicated process. It relies on the REST API and requires
-    multiple steps, executed in correct order to ensure the correct removal of the layers.
+    One of the most popular ways of sharing Docker images is through the
+    [**Docker Hub repository**](https://hub.docker.com).
+    To access this service you need to
+    [**create a free account**](https://hub.docker.com/signup).
+    Once you have you account ready, you can start sharing your images. First
+    you need to correctly tag the existing image.
+
+    ```bash
+    $ docker tag docker_intro:v0.1a [Docker Hub ID]/docker_intro:v0.1a
+    ```
+    The above command takes our existing image `docker_intro:v0.1a`
+    and gives it a second name `[Docker Hub ID]/docker_intro:v.0.1a`,
+    where `[Docker Hub ID]` is the username you selected when setting up the 
+    Docker Hun account. By default, Docker will expect to use Docker Hub as a
+    repository and the `[Docker Hub ID]/` tells it which account to push the
+    image to
+
+    ```bash
+    $ docker push [Docker Hub ID]/docker_intro:v0.1infile
+    ...
+    ```
+    Depending on the size of the image you are pushing and your connection
+    speed, this command take a few minutes to execute. Now our image is safely
+    stored in an online repository and you can see its details from your
+    Docker Hub account
+
+    ![Docker Hub image](04_docker_deploy_deep/docker_hub.png)
+
+    Now we can delete the image we have just pushed and the original version
+    to make sure we removed all the references
+
+    ```bash
+    $ docker image rm mmalenta/docker_intro:v0.1a
+    $ docker image rm docker_intro:v0.1a
+    ```
+
+    If we need the image again, we can pull it from the repository
+
+    ```bash
+    docker image pull mmalenta/docker_intro:v0.1a
+    v0.1a: Pulling from mmalenta/docker_intro
+    Digest: sha256:141d4a94a045f5b42bf6a6c74d9d868beab0ab5c5352de132f2a6068e1bd8d16
+    Status: Downloaded newer image for mmalenta/docker_intro:v0.1a
+    docker.io/mmalenta/docker_intro:v0.1a
+    ```
+    The output tells us that repository has a newer version of the image than
+    the one found on the host (host doesn't really have one at all) and that
+    it was successfully downloaded Depending on what images you have on the 
+    host machine, Docker may download a whole new image, just few new layers or 
+    nothing at all.
+
+* **Private Docker registry**
+
+    **This is an optional section, which contains some more complex information
+    than the rest of the workshop. You are therefore not required to run any
+    code that is shown here. This information is provided to make you aware of
+    alternatives to the online repositories in case they no longer meet your
+    needs. If you are interested in learning more about private registries, 
+    please refer to the
+    [satelline course](https://github.com/mmalenta/docker_registry_tutorial).**
+
+    Instead of storing your images with an external provider that you have no
+    control over, you may decide that setting up a private registry is a more
+    suitable way of keeping your images safe.
+
+    We will run a very basic registry on our host machine listening on
+    port 5050 (use any other host port if this one is already in use)
+
+    ```bash
+    $ docker run -d -p 5050:5000 --name registry registry:2
+    $ docker ps
+    CONTAINER ID   IMAGE                          COMMAND                  CREATED         STATUS         PORTS                    NAMES
+    0824f476861e   registry:2                     "/entrypoint.sh /etc…"   5 seconds ago   Up 4 seconds   0.0.0.0:5050->5000/tcp   registry
+    ```
+
+    We can see that the registry is listening on adress `0.0.0.0` and port
+    `5050`. We can now save our image in that registry in a similar fashion
+    to when we were using Docker Hub.
+
+    First we tag the image
+    ```
+    $ docker image tag docker_intro:v0.1a localhost:5050/docker_intro:v0.1a
+    ```
+
+    In this case, instead of simply specifying our Docker Hub username, we
+    need to provide DNS or IP and port of our private registry. Here we use a
+    local registry, but there is nothing stopping you from having your proviate
+    registry on the other side of the globe. Then we push exatly like before
+
+    ```
+    $ docker image push localhost:5050/docker_intro:v0.1a
+    6f15325cc380: Pushed 
+    1e77dd81f9fa: Pushed 
+    030309cad0ba: Pushed 
+    v0.1a: digest: sha256:141d4a94a045f5b42bf6a6c74d9d868beab0ab5c5352de132f2a6068e1bd8d16 size: 943    
+    ```
+    Now, the image is stored in our private repository. Here we used a very
+    simple setup, with all the default parameters and run the repository on
+    our machines. If you decide that private repository is the most suitable 
+    solution for you and your team, you can
+    [**configure it accordingly**](https://docs.docker.com/registry/configuration/)
+    and make it accessible through the Internet if necessary.
+
+    **Exercise (3 minutes):** what are pros and cons of both hosted and private
+    repositories? How can you make sure that you and the users of your software
+    can access it quickly and easily?
 
 # 5. Summary and recommened resources
+
+**<h3>Section length: ~5 minutes</h3>**
 
 **Free resources:**
 
