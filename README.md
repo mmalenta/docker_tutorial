@@ -108,20 +108,41 @@ efficient at introducing researchers to good containerisation practices.
 ## 1.1 What are containers
 **<h3>Section length: 2 minutes</h3>**
 
+Containers are processes than although run on your host Operating System (OS),
+they can and do perform their work in isolation. Your containers do not have
+to know what the rest of your OS is up to.
+
 ## 1.2 What containers are not
 **<h3>Section length: 2 minutes</h3>**
+
+You will often hear the expression that "containers are like VMs", or 
+"like VMs, but lighter". This may make sense on the surface: there
+are fewer moving components in the case of containers and the end result
+might be the for the end user.
+
+Containers remove a lot of components of virtual machines: they do not
+virtualise the hardware, they do not have to contain a fully-fledged
+guest OS to operate. They have to rely on the host OS instead.
+
+For a more in-depth explenation of the differences between VMs and
+containers, please [**see this website by the IBM Cloud Team**](https://www.ibm.com/cloud/blog/containers-vs-vms)
 
 ## 1.3 Why do you (and don't) need containers
 **<h3>Section length: 1 minute</h3>**
 * Containers will provide a reproducible work environment
 * Goes beyond just sharing your code: you provide a fully-working software
+* Can build self-contained images that meet the particular needs of your
+  project. No need to install software "just in case"
+* No longer tied to software and library version on your hosr system.
+  Need python3, but only python2 is available? There is an image for that.
 
 &nbsp;
 
 * Your software still depends on hardware you run it on - make sure
 your results are consistent across different hardware architectures
 * Not the best for sharing large amounts of data
-(see [Section 4.1](#41-running-containers-efficiently-and-safely) )
+(see [Section 4.1](#41-running-containers-efficiently-and-safely))
+* Additional safety concets, not entirey safe "out of the box"
 # 2. Docker introduction
 **<h3>Section length: 40 minutes</h3>**
 ## 2.1 Basic components of Docker
