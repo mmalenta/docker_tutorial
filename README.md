@@ -170,24 +170,33 @@ malicious user if Docker is not configured and used properly.
 
 **<h3>Section length: 20 minutes</h3>**
 
-Now that we covered the basic ideas behind containers, it is time to focus
+Now that we covered the basic ideas behind images and containers, it is time to focus
 on one technology in particular - Docker.
 Since its initial release in 2013, Docker has been widely adopted in many areas of
-research and the ‘industry‘, including radio astronomy. It is used to provide access to
-e-commerce and streaming services, machine learning platforms and, more generally,
-as a tool for distributing consistent software environments. Currently it is one
-of many existing container technologies that researchers can choose from, such as Singularity and Podman.
+research and the ‘industry‘. It is used to provide access to
+e-commerce and streaming services, machine learning platforms, scientific
+pipelines (CERN, SKA, NASA).
+
+More generally, you should use it as a tool for distributing consistent
+software environments. Currently it is only one of many existing container 
+technologies that researchers can choose from. Two popular alternatives
+are [**Singularity**](https://singularity.hpcng.org) and 
+[**Podman**](https://podman.io).
 Some solutions offer better support for High Performance Computing, 
-when others provide a low-level control of the environment.
-It is therefore possible that after taking this course and familiarising
-yourself with other containerisation solutions, you might decide that Docker
-is not be the ideal fit for your requirements.
-Despite the strong competition and some notable shortcomings, Docker is still 
+while others provide a low-level control of the environment. There really
+is something for everyone.
+
+It is possible that after taking this course and familiarising
+yourself with other containerisation solutions, you will decide that Docker
+is not the ideal fit for your requirements.
+Despite the strong competition and some shortcomings, Docker is still 
 a popular choice and is often seen as a standard for containers.
 
-**You should have Docker installed by now.** We will now use a simple Docker
-command to download the *Hello World* of **Docker images** and start our
-very first **Docker container**.
+<br>
+
+**You should have Docker installed by now.** For our first exercise / example,
+we will run a short Docker command to download the *Hello World* of 
+**Docker images** and start our very first **Docker container**.
 
 ```docker
 
@@ -225,7 +234,7 @@ For more examples and ideas, visit:
 
 **<h3>Let's examine the command and the generated output step by step.</h3>**
 
-* **The very first line**
+* **The command that we execute**
   
     ```docker
     $ docker container run hello-world
@@ -234,18 +243,13 @@ For more examples and ideas, visit:
     instructs Docker that we would like to start a container using a `hello-world`
     image. This command can also be written as `docker run hello-world`, omitting 
     the `container` part. This change was 
-    [introduced in 2017](https://www.docker.com/blog/whats-new-in-docker-1-13/)
-    with a major overhaul of the Docker CLI (Command Line Interface). If you have
-    an older version of Docker installed on your machine, before this changes were
-    introduced (we strongly recommend that you upgrade due to security reasons),
-    the full command will not work and you will have to use the shortened version.
+    [**introduced in 2017**](https://www.docker.com/blog/whats-new-in-docker-1-13/)
+    with a major overhaul of the Docker CLI (Command Line Interface). If the version
+    of Docker installed on your machine, comes from before these changes were
+    introduced (we strongly recommend that you upgrade it due to security reasons),
+    the full command will not work and you will have to use the short version.
     This course however is written with the new versions of Docker in mind and 
-    will **follow the convention of using the extendend versions of the commands**.
-
-    You can hear people talk about "running the image" or "running the container"
-    and this can get a bit confusing, especially if these two are (incorrectly)
-    used interchangeably. So what is the difference exactly and does it really
-    matter?
+    will **follow the convention of using the extended versions of the commands**.
 
 * **The next few lines**
 
@@ -257,22 +261,33 @@ For more examples and ideas, visit:
     Status: Downloaded newer image for hello-world:latest
     ```
 
-    tell us that Docker was not able to find this image on our machine and 
+    tells us that Docker was not able to find this image on our machine and 
     has to download it from the external repository (more about repositories 
     in [Section 4.2](#42-distributing-containers)). If you have used this 
     particular image in the past (when for example testing your Docker
     installation from [Section 0](#0-logistics)), you will not see any
     information about Docker trying to download the image.
 
-    Describe layers - there is a single layer pulled here.
-    Describe pull command - just download the image without running it.
+    You could also separate the `docker container run ...` command above into two instructions
+    ```docker
+    $ docker image pull hello-world
+    $ docker container run hello-world
+    ```
+    In this case we are very explicit and tell Docker to first download (pull) the
+    image from the external repository and then start the container based on
+    that image. If you already have the image on your host machine, you can
+    skip the `pull` command. In this case, including the `docker image pull` 
+    command separately can be seen as a bit redundant as Docker takes care of any missing
+    images with `docker container run`. You can however just pull the image
+    and not run it at all, or pull it when you have access to the Internet and 
+    later start the container when you are offline.
 
 * **The rest of the output**
 
     The rest of the output is the most interesting part. It is an
     innocent-looking list, but as items 3 and 4 from that list explain, that
     particular part of the output was generated INSIDE the container and only
-    then send to the terminal for us to see. That means we have **successfully
+    then sent back to the terminal for us to see. That means we have **successfully
     created and run our very first Docker container**.
 
 **<h3>There are a few things we can do after running this command</h3>**
