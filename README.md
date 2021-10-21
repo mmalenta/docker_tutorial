@@ -489,34 +489,33 @@ For more examples and ideas, visit:
 
 **<h3>Section length: 20 minutes</h3>**
 
-We now know the basics of managing Docker images and containers. We know we
-can download an existing image and launch a container based on it. That might
-be all that we need - Docker has been around since 2013 so there exists a
-plethora of images that contain some of the most popular software. Just go to
-the [Docker Hub](https://hub.docker.com/search?q=&type=image) and see for
+We now know the basics of managing Docker images and containers. We learned how
+to download an existing image and launch a container based on it. That might
+be all that you need in the end. Docker has been around since 2013, and you can 
+many images that contain some of the most popular software. Often they will be
+enough to meet your needs. Just go to
+the [**Docker Hub**](https://hub.docker.com/search?q=&type=image) and see for
 yourself how many images there are available 
 **(8,125,970 at the time of writing)**.
 
 Chances are however that you work in a specialised field and none of these 
-millions of images will do what you need. One of the main driving forces
-behind the incresing use of container is the ability for the developer to
-package their own software inside the image and provide end users with a
-reproducible development environment. You can do it with your software as well,
+millions of images will do what you need, or they do, but not exactly
+how you would like them to. One of the main driving forces
+behind the increasing use of containers is the ability for the developers to
+package their software inside the image and provide end users with a
+stable environment. You can do it with your software as well,
 and that is what we are going to do now. 
 
-
-
- **<h3>Buid a simple Docker image</h3>**
+ **<h3>Build a simple Docker image</h3>**
 
   The development of every Docker image starts with a Dockerfile. It is a 
   recipe that contains a series of commands for installing and configuring
-  software packages included in your image. As we will see above, we can think
-  of a Dockefile as a collection of regular shell expressions combined with
-  an extra Docker syntax that tells Docker what to do. If you have used 
-  a *nix system before, the Dockerfile shown below should look familiar.
+  software packages included in your image. As we will see below, we can think
+  of a Dockerfile as a collection of regular shell expressions combined with
+  an extra Docker syntax that tells Docker how to construct the image. 
+  If you have used a *nix system before, this Dockerfile should look familiar:
 
 ```docker
-
 FROM ubuntu:18.04
 
 WORKDIR /software
@@ -527,9 +526,9 @@ RUN apt-update && apt -y install git \
 CMD ./docker_tutorial/02_docker_into/scripts/hello_docker.sh
 ```
 
-Here we covered only the most basic Dockerfile syntax. For more detailed
-information, please consult the
-[Dockerfile reference](https://docs.docker.com/engine/reference/builder/).
+In this workshop we cover only the most basic Dockerfile syntax and build options.
+For more detailed information, please consult the
+[**Dockerfile reference**](https://docs.docker.com/engine/reference/builder/).
 
 * **The first line**
 
@@ -537,58 +536,64 @@ information, please consult the
     FROM ubuntu:18.04
     ```
 
-    is a must for your Dockerfile. The `FROM` instructions tells Docker
+    is a must for your Dockerfile. The `FROM` instruction tells Docker
     which *base image* to use. Think about it like a basic OS installation
-    on a new machine: you install a basic operating system and then add 
-    required software. Here we tell Docker to use a pre-build image as a
-    foundation we will buid upon. In this case we use a `ubuntu:18.04` base
-    image. There are base images available for the most popular Linux operating
+    on your new machine: you install bare-bones OS and then add the
+    required software. 
+    
+    Here we tell Docker to use a pre-build image as the
+    foundation we will build upon. We use an `ubuntu:18.04` base
+    image. There are base images available for all the most popular Linux operating
     systems (or as close as possible to what you may need) as well as Windows.
-    Not only we tell Docker to use a ubuntu image, but also specify an
+    
+    Not only we tell Docker to use an ubuntu image, but also specify an
     additional *tag*. This tag allows you to document possible multiple
-    versions of the same software stack. If no tag is specified, `latest` tag
-    is used by default. This is bad practice from the reproducubility point of
-    view and we will talk about this in more detail in 
+    versions of the same software stack. If no tag is specified, the `latest` tag
+    is used by default. This is bad practice from the reproducibility point of
+    view as you always download the newest version of the software and can run into
+    problems with dependencies and software stability. 
+    We will talk about this in more detail in 
     [Section 3.2](#32-efficient-and-safe-use-of-containers).
 
 * **Let's install some software**
 
-    The next line
+    The next line:
     ```docker
     WORKDIR /software
     ```
 
-    sets the workding directory for the following `RUN` and `CMD` instructions.
-    This of it like the ususal `pwd` with extra powers. If the directory
+    sets the working directory for the following `RUN` and `CMD` instructions.
+    Think of it as the usual `cd` with extra powers. If the directory
     exists, `WORKDIR` will set it as a working directory for the following
     commands. If however the directory does not exist, `WORKDIR` will first
-    create it before setting it as a working directory.
+    create it before setting it as your working directory.
 
     **Question:** what happens if we do not use the `WORKDIR` instruction?
     Where do all the files go?
 
-    We then proceed to install some software
+    We then proceed to install some software:
     ```docker
     RUN apt update && apt -y install git \ 
       && git clone https://github.com/mmalenta/docker_tutorial
     ```
 
     The above line is exactly what you would run when installing software
-    on your Debian-based machine, with the exception of the `RUN` instruction
+    on your Debian-based machine, with the additional`RUN` instruction
     which tells Docker to execute the command and include the results in the
-    image. The results are not unexpected - the resulting image will have 
+    image. The outcome is not unexpected - our new image will have 
     `git` installed and the repository for this course will be cloned into the
     `/software/docker_tutorial/` directory (remember we changed the directory
-    for the `RUN` command with `WORKDIR` above). Here we also divide the 
-    command into multiple lines by using `\` (backslash), which tells Docker
+    for the `RUN` command with `WORKDIR` instruction above). 
+    
+    We divide the command into multiple lines by using `\` (backslash), which tells Docker
     that these lines form a single `RUN` command. There is nothing stopping us
     from writing the whole command on a single line, but that can produce
-    some truly unreadable Dockerfiles.
+    unreadable Dockerfiles.
     
     It is important to note that you will require a working Internet connection
-    to be able to execute this particular `RUN` command. This is not always the
-    case, as some Dockerfiles use files stored locally and copy them into the
-    image.
+    to be able to execute this particular `RUN` command, as you would normally
+    do when running apt. This is not the case for every `RUN` command,
+    as some Dockerfiles work on files stored locally.
 
 * **Let's actually run some software**
 
@@ -597,38 +602,42 @@ information, please consult the
     CMD ./docker_tutorial/02_docker_into/scripts/hello_docker.sh
     ```
 
-    tells Docker to execute the `hello_docker.sh` script when we launch out
-    container using the `docker container run` command
+    tells Docker to execute the `hello_docker.sh` script when we launch our
+    container using the `docker container run` command.
 
+<br>
 We are halfway there. Now that our recipe is ready, we need to convert it into 
 an image.
 
 ```docker
-docker build -f 02_docker_intro/Dockerfile.02 --tag docker_intro:v0.1 .
+docker image build -f 02_docker_intro/Dockerfile.02 --tag docker_intro:v0.1 .
 ```
 
-Here we instruct Docker daemon to take our Dockerfile under
+Here we instruct Docker daemon to take our Dockerfile we saved under
 `02_docker_intro/Dockerfile.02` (if you are currently in a different directory
 than the course root, make sure that you change the Dockerfile path
 accordingly) and use it to build an image called `docker_intro:v0.1`. We can 
 name our Dockerfile however we want - there are no rigid naming conventions,
-but make sure that you use descriptive names if are developing multiple 
-Dockerfiles. By default, Docker tries to use a Dockerfile called `Dockerfile`,
-that's why we use `-f` option to `f`orce the use of our more descriptive
-Dockerfile. We then give our image a name consisting of the main name
+but make sure that you use descriptive names, especially if you are 
+developing multiple Dockerfiles. By default, Docker tries to use a 
+Dockerfile simply called `Dockerfile` from the current directory.
+That is why we use `-f` option to `f`orce the use of our file with a more
+descriptive name. 
+
+We then give our image a name consisting of the main name
 `docker_intro` and give it a version tag `v0.1` (you may name your image
 however you want - this is just an example). If no tag is provided, Docker will
-use `latest` as the default tag. At the end comes the full stop `.`. In this
-case it is actually part of our `docker build` command and is used to specify
-*the build context*. Build context specifies files and resources that will
-be available during the build process and which we will be able to use. In the
-case of the command above we specify the current directory `.` as our build
-context making all the files and directories present in it available to us
-during the building phase.
+use `latest` as the default tag. At the end comes the full stop `.`. 
+It is actually a part of our `docker build` command and you have to remember
+to include it. It is used to specify *the build context*. Build context 
+specifies files and resources that will be available during the build process 
+and which we will be able to use. In the case of the command above we specify 
+the current directory `.` as our build context. This makes all the files and 
+directories present in it available to the Docker daemon during the building phase.
 
-Once you run the build command above, Docker will first parse the provided 
-Dockerfile to find any syntatic errors, prepare and send the build context
-to the Docker daemon and execute each command that we provided inside our
+Once we run the build command above, Docker will first parse the provided 
+Dockerfile to find any syntactic errors, prepare and send the build context
+to the Docker daemon and execute each command that we included inside our
 Dockerfile. The output will look something like this
 
 ```docker
@@ -647,18 +656,18 @@ We can now run our very own image using the run command we have learned above.
 
 **Exercise (10 minutes):** Using the `02_docker_intro/Dockerfile.02` Dockerfile as a
 starting point, create 3 separate Dockerfiles:
-  1. Very basic Dockerfile with just the `FROM` instroction
+  1. Very basic Dockerfile with just the `FROM` instruction
   2. Add a `RUN` instruction that installs `git` from your preferred repository
   3. Add another `RUN` instruction that removes git
    
-Build all 3 Dockerfiles with different tags. Notice any differences in the
+Build all 3 Dockerfiles with different tags. Can you notice any differences in the
 build progress output? What about the size difference of each image (use 
 `docker image ls` as described in
 [Section 2.1](#21-basic-components-of-docker))? Anything surprising?
-**If you are stuck or unsure** use 3 Dockerfiles present in the
-`02_docker_intro` directory (extenstions `.02a`, `.02b` and `.02c`). Before
+**If you are stuck or unsure** use 3 Dockerfiles provided in the
+`02_docker_intro` directory (extensions `.02a`, `.02b` and `.02c`). Before
 you do that though, make sure you give it a go on your own and **do not 
-hesistate to ask if you run into any problems**!
+hesitate to ask if you run into any problems**!
 
 # 3. Docker build process deep dive
 
