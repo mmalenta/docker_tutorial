@@ -268,7 +268,7 @@ For more examples and ideas, visit:
     installation from [Section 0](#0-logistics)), you will not see any
     information about Docker trying to download the image.
 
-    You could also separate the `docker container run ...` command above into two instructions
+    You could also separate the `docker container run ...` command above into two instructions:
     ```docker
     $ docker image pull hello-world
     $ docker container run hello-world
@@ -298,14 +298,14 @@ For more examples and ideas, visit:
     image is already present on your computer? Can you have this knowledge as
     well? Docker keeps track of all the images and layers that you download.
     There usually is a directory on your system which contains all the
-    currently downloaded images and the associated SHA256 key used to identify
-    them. This ensures that the same layer is not downloaded twice and can be reused
+    currently downloaded images and the associated SHA256 keys used to identify
+    them. This ensures that the same layer or image is not downloaded twice and can be reused
     if necessary. For an in-depth description on how Docker stores images, please refer to
-    [this help guide](https://docs.docker.com/storage/storagedriver/).
+    [**this help guide**](https://docs.docker.com/storage/storagedriver/).
     
     The placement and structure of relevant directories can be
     different depending on your Docker installation and require root
-    permissions to access. There is however an short command that lists all the
+    permissions to access. There is however a short command that lists all the
     locally available images:
 
     ```docker
@@ -314,7 +314,7 @@ For more examples and ideas, visit:
 
     Depending on how long (if at all) you have been using Docker for, the
     output will show only a single image that we have used above or multiple 
-    (as many as few tens) of images, as seen below (this is what I see when I
+    (as many as few tens of) images, as seen below (this is what I see when I
     run the above command on my work PC - **you will see something different**)
 
     ```docker
@@ -340,50 +340,49 @@ For more examples and ideas, visit:
     nvidia/cuda                10.0-base-ubuntu18.04    841d44dd4b3c   19 months ago   110MB
     ```
 
-    If you know its name, you can list just a specific image
+    If you know its name, you can list just a specific image:
 
     ```docker
     $ docker image ls hello-world
     ```
 
     or even use wildcards if you are not sure about the full image name
-    (was it `hello-world` or `hello_world`?)
+    (was it `hello-world` or `hello_world`?):
 
     ```docker
     $ docker image ls hello*
     ```
 
-    We can now examine the output of one of the above commands
+    We can now examine in detail the output of one of the above commands:
 
     ```docker
     REPOSITORY    TAG       IMAGE ID       CREATED        SIZE
     hello-world   latest    d1165f221234   3 months ago   13.3kB
     ```
 
-    This tells us that there is a single `hello-world` image available locally
-    on our machine with the `latest` tag (we will talk more about the
-    importance of tags in
+    This output tells us that there is a single image starting with the word `hello` available locally on our machine (`hello-world` to be exact), with the `latest` tag. 
+    We will talk more about the importance of tags in
     [Section 2.2](#22-building-and-deploying-docker-containers) - for now just
-    treat them as an extra information about the version of the image). Next
-    comes image ID, which is a shortened version of the SHA256 key (or digest 
-    using Docker vocabulary) used to identify the image, when the image was
-    created (this refers to when the image was build and now downloaded to
-    your computer - this particular image was created 3 months ago, even though
+    treat them as an extra bit of information about the version of the image.
+    Next comes the image ID, which is a shortened version of the SHA256 key (or digest, 
+    using Docker vocabulary) used to identify the image, information on when the image was
+    created. This information refers to when the image was first built and not pulled - this 
+    particular image was created 3 months ago, even though
     I had downloaded it only 2 minutes before pasting this output in the
-    snipped above) and the size of the image. 
+    snipped above. At the end, the size of the image is shown. 
 
-    We have used the most basic version of the image listing command. For more
-    completed reference and advanced examples, such as formatting and 
-    filtering, please visit
-    [this docker images reference](https://docs.docker.com/engine/reference/commandline/images/).
+    We have used the most basic version of the image listing command, with the
+    exception of using wildcards. For a complete reference and advanced examples, 
+    such as formatting and filtering, please visit
+    [**this docker images reference**](https://docs.docker.com/engine/reference/commandline/images/).
     **Quick note:** the above document refers to a `docker images` command,
     which is *an alias* to the full `docker image ls` command. All the options
-    however will work with both version of this command, so you can use it as
+    however will work with both versions of this command. You can still use it as
     a reference for the `--format` and `--filter` options.
 
 * **Examine currently running images**
 
-    We can examine currently running images using the following command
+    We can examine currently running images using command familiar to Linux users:
     ```docker
     $ docker ps
     ```
@@ -391,33 +390,47 @@ For more examples and ideas, visit:
     ```docker
     CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
     ```
-    nothing really. That means there are no containers running at this moment
-    in time. When we launched our `hello-world` container above, it run, it
-    did the job required of it and it stopped immediatelly. We still have an
-    option to check whether our container was run at all (in this case, we
-    get an output in the terminal, but that is not always the case and depends
-    on the design requirements of the underlying image). We can force the
-    Docker to list *all* the containers with the extra option
+    nothing really. This means there are no containers running at this moment
+    in time. 
+    
+    When we launched our `hello-world` container above, it started, it
+    did the job it was designed to do and it stopped immediately. In the case
+    of the `hello-world` image, the designers decided it should print out a helpful
+    output once the container is launched successfully, but that may not always 
+    be the case. 
+    
+    We still have an option to check whether our container was started at all. We can force Docker to list *all* the containers with the extra `-a` option:
     ```
     $ docker ps -a
     CONTAINER ID   IMAGE                   COMMAND                  CREATED        STATUS                    PORTS     NAMES
     7dd021096f75   hello-world             "/hello"                 3 hours ago    Exited (0) 3 hours ago              trusting_herschel
 
     ```
-    and in this case we actually get some useful information. We see that we
+    In this case we actually get some useful information about our container 
+    we have just run. We see that we
     launched the container, it run and it exited with code 0, meaning a
     successful, error-free execution. We can also see when the container was
     created and when it completed its execution. As you have seen, we get the
-    results from the `hello-world` container pretty much immediatelly, and
-    therefore these are pretty much the same. Every container also has
+    results from the `hello-world` container pretty much immediately, and
+    therefore the `CREATED` and `Exited` times are the same, but generally this
+    is not the case. 
+    
+    Every container has
     a "human-readable" name assigned to it at launch. It makes it easier to
     refer to the container using that name instead of the container ID, listed
-    in the first column of the above output. These names are random and Docker
+    in the first column of the above output. These names are randomly generated
+    from a list of adjectives and famous scientists and Docker
     does not guarantee the name will repeat for the same container (it is
     extremely unlikely your container will have the same name as the one
-    listed above). It is therefore important to provide a memorable name with
-    the `run` command using the `--name` option to ensure reproducible and
-    predictable deployment. Naming of containers will be discussed in more
+    listed above).
+    
+    It is therefore important to provide a memorable name with
+    the `run` command using `--name` option to ensure reproducible and
+    predictable deployment. This is especially important when you run multiple 
+    containers at the same time, e.g. making it easy to differentiate front- and 
+    backend Node-based containers that can have the same underlying image, or 
+    rely on scripts and want to have predictable parameters.
+    Naming of containers will be discussed in more
     detail in [Section 4.1](#41-running-containers-efficiently-and-safely).
 
     If you are running containers right now, you will see them as "Up", as
@@ -432,8 +445,10 @@ For more examples and ideas, visit:
 
     Exited containers
     can be thought of as being hibernated - they are not running, their
-    internal state is saved and they can be woken up and run again. After we are satisfied with the results provided by our container launch, we might need to and want to remove it.
-    We can do this with the help of `container rm` command
+    internal state is saved and they can be woken up and run again. 
+    When we are satisfied with the results provided by our container launch, 
+    we might need to remove it.
+    We can do this with the help of `container rm` command:
 
     ```docker
     $ docker container rm trusting_herschel
@@ -448,11 +463,11 @@ For more examples and ideas, visit:
 
 * **Remove the image**
 
-    We might not want to stop there. We made sure that the container was no
-    longer running and then we removed it. What if we want to go one step
-    further and want to get rid of the image as well? Docker has a fairly
+    We made sure that the container was no longer running and then we removed it. 
+    What if we want to go one step further and want to get rid of
+    the underlying image? Docker has a fairly
     intuitive command for that as well - instead of removing a container, we
-    tell it to remove the image instead
+    tell it to remove the image instead:
 
     ```docker
     $ docker image remove hello-world
