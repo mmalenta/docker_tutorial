@@ -108,9 +108,24 @@ efficient at introducing researchers to good containerisation practices.
 ## 1.1 What are containers
 **<h3>Section length: 2 minutes</h3>**
 
-Containers are processes than although run on your host Operating System (OS),
-they can and do perform their work in isolation. Your containers do not have
-to know what the rest of your OS is up to.
+You may hear people say they are "running an image" or "running a container". These
+terms are often (incorrectly!?) used interchangeably. 
+
+In this workshop, we refer to a (container) image as the collection of
+software that you build up and  bundle together. You then can run this image. 
+At that point it becomes a container, where you can run your software and perform all the other operations
+you would normally perform on your host Operating System (OS). Think of it as 
+similar to the difference between an `.exe` file and a running application that
+clicking this file starts. `.exe` file has all the components necessary to run the application,
+but you actually have to run it to make use of it.
+
+The most important feature of containers, and where their real strength comes from, is that 
+unlike "regular" applications, they can and often do perform all their work in isolation.
+Your containers do not have to know what the rest of your OS is up to. 
+They don't even have to have an access to the same files as your host OS 
+(although, as we will see later, you can enable this access), or share the same network 
+(again it is possible to achieve that, but it's not the default setting).
+
 
 ## 1.2 What containers are not
 **<h3>Section length: 2 minutes</h3>**
@@ -118,31 +133,37 @@ to know what the rest of your OS is up to.
 You will often hear the expression that "containers are like VMs", or 
 "like VMs, but lighter". This may make sense on the surface: there
 are fewer moving components in the case of containers and the end result
-might be the for the end user.
+might be the same for the end user.
 
-Containers remove a lot of components of virtual machines: they do not
+Containers remove a lot of components of virtual machines though: they do not
 virtualise the hardware, they do not have to contain a fully-fledged
 guest OS to operate. They have to rely on the host OS instead.
 
-For a more in-depth explenation of the differences between VMs and
+For a more in-depth explanation of the differences between VMs and
 containers, please [**see this website by the IBM Cloud Team**](https://www.ibm.com/cloud/blog/containers-vs-vms)
 
 ## 1.3 Why do you (and don't) need containers
 **<h3>Section length: 1 minute</h3>**
-* Containers will provide a reproducible work environment
-* Goes beyond just sharing your code: you provide a fully-working software
-* Can build self-contained images that meet the particular needs of your
-  project. No need to install software "just in case"
-* No longer tied to software and library version on your hosr system.
+* Containers will provide a reproducible work environment.
+* They go beyond just sharing your code: you provide a fully-working software
+with all its required dependencies (modules, libraries, etc.).
+* You can build self-contained images that meet the particular needs of your
+  project. No need to install software "just in case", or install something to
+  be used just once.
+* You are no longer tied to the software and library versions installed on your host system.
   Need python3, but only python2 is available? There is an image for that.
 
 &nbsp;
 
 * Your software still depends on hardware you run it on - make sure
-your results are consistent across different hardware architectures
+your results are consistent across different hardware architectures.
 * Not the best for sharing large amounts of data
-(see [Section 4.1](#41-running-containers-efficiently-and-safely))
-* Additional safety concets, not entirey safe "out of the box"
+(see [Section 4.1](#41-running-containers-efficiently-and-safely)) inside
+the image (same as you wouldn't use git to share a 10GB file).
+* Additional safety concerns, as Docker gives extra power to the user "out of the box".
+There is potential to do some damage to the host OS by an inexperienced or
+malicious user if Docker is not configured and used properly.
+
 # 2. Docker introduction
 **<h3>Section length: 40 minutes</h3>**
 ## 2.1 Basic components of Docker
@@ -163,9 +184,6 @@ yourself with other containerisation solutions, you might decide that Docker
 is not be the ideal fit for your requirements.
 Despite the strong competition and some notable shortcomings, Docker is still 
 a popular choice and is often seen as a standard for containers.
-
-You may here people saying "running an image" or "running a container". These
-terms are often (incorrectly!) used interchangeably.
 
 **You should have Docker installed by now.** We will now use a simple Docker
 command to download the *Hello World* of **Docker images** and start our
