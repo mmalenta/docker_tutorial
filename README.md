@@ -1053,8 +1053,8 @@ information please consult
     ```
     Anything worrying at the command line prompt? What if you run `id`?
 
-    If I run this container, I see this at my command line
-    (you will most likely see a different ID, as it is the contaiener ID)
+    If I run this container, I see this on my command line
+    (you will most likely see a different ID, as it is the container ID)
 
     ```docker
     root@cf3178c55928:/software# id
@@ -1063,8 +1063,8 @@ information please consult
 
     **We are running as root inside the container!** If you are not careful
     (or not used to having root privileges), you can damage your containerised
-    environment or even your host operating system. Consider a simple, example,
-    not necessarily malicious - this could easily be a result of used mistyping
+    environment or even your host operating system. Consider a simple example,
+    not necessarily malicious - this could easily be a result of mistyping
     or copying a command wrong
 
     **!! DO NOT EXECUTE THE FOLLOWING CODE ON YOUR COMPUTER !!**
@@ -1081,17 +1081,18 @@ information please consult
     root@0a90f853bf2b4:/software# touch ./bin/hello
     ```
 
-    Here we have made a mistake and mounted our **host root system** to the 
-    containers `/software` directory. Because I now run as a `root` user inside
-    the container, I can make changes to the host system files: I can add some
-    (possibly malicious) files or I can remove some (possibly vital) files.
+    We have made a (simple) mistake and mounted our **host root directory** to the 
+    `/software` directory inside the container. Because we are a `root` user by
+    default inside the container, we can make changes to the host system files: 
+    we can add possibly malicious scripts or remove vital files.
 
-    It is therefore essential for security reasons to specify a non-root user
+    It is essential for security reasons to specify a non-root user
     when launching a Docker container with the help of `--user` option. We can
-    use the option to specify which user form the host OS to use. Docker and
+    use this option to specify which user form the host OS to use. Docker and
     your host OS share the list of user IDs and group IDs, even though the do
-    not share the usernames (as we shall see in the next example). Now we can
-    run our buggy command in a slightly more secure manner
+    not share the usernames (as we shall see with the next example). 
+    
+    We can now run our mistyped command in a slightly more secure manner:
 
     ```bash
     $ docker container run --user 1000:1000 -it --rm -v /:/software docker_intro:v0.1multi_first
@@ -1105,52 +1106,53 @@ information please consult
     I have no name!@75523ff70e1d:/software$ touch ./bin/hello
     touch: cannot touch './bin/hello': Permission denied
     ```
-    We have now successfully launched the container with user ID 1000 and
+
+    We have launched a new container with user ID 1000 and
     group ID 1000 (the format is `--user [user ID]:[group ID]`). As we have not
-    created this user inside the container, Docker has no idea who that user
-    exactly, but we can still pefrorm various tasks with the same permissions
+    created this user inside the container, Docker has no idea who that user is
+    exactly, but we can still perform various tasks with the same permissions
     as the original user on the host OS. Most importantly, we are no longer
-    allowed to mess with the host OS root directory, as seen above with the
-    `Permission denied` statememt.
+    allowed to mess with the host OS root directory, as indicated above by the
+    `Permission denied` error.
 
     **Make sure you never launch any containers without specifying a non-root
-    user!** It may seem as an unnecessary extra step, especcialy if you just
+    user!** It may seem as an unnecessary extra step, especially if you just
     "quickly run something for some tests", but adding this short and easy
     option can significantly reduce possible malicious attack vectors and also
     limit the consequences of any mistakes you or your fellow Docker users can
     (and will) make.
 
     If you expect to run Docker on a regular basis in production environment,
-    e.g. as a webserver or a real-time machine learning pipeline, consider
+    e.g. as a web server or a real-time machine learning pipeline, consider
     creating a separate user with privileges limited to just parts required
-    for your workflow and then always stick to this user when launching your
+    for your workflow and then always use this user when launching your
     containers.
 
 * [**Rootless mode**](https://docs.docker.com/engine/security/rootless/)
 
     Running the "standard" Docker daemon requires root privileges. Unless you
     are in charge of the computational resources, you may not be able to
-    install it on your own and your IT personnel might not be willing to do
+    install it on your own. Your IT support might not be willing to do
     this either due to various concerns.
 
     With the most recent versions of Docker (Docker Engine v20.10 released at
     the end of 2020 has a fully-matured support) it is possible to run the
-    Docker daemon without root privileges. It is now possible to install and
-    use Docker without the need for root installation - you are running your
-    own personal Docker deployment.
+    Docker daemon without root privileges. The installation however still requires
+    some root privileges. After that however, you can run your own personal
+    Docker deployment that you can use as a regular user.
 
-    By default and by a concious security desing decisions, 
-    [**rootles mode comes with some limitations**](https://docs.docker.com/engine/security/rootless/#known-limitations). For example, you can no longer use [**privileged
+    By default and by a conscious security design decisions, 
+    [**rootless mode comes with some limitations**](https://docs.docker.com/engine/security/rootless/#known-limitations). For example, you can no longer use [**privileged
     ports**](https://www.w3.org/Daemon/User/Installation/PrivilegedPorts.html) (ports with numbers < 1024). This can affect workflows that depend
-    on the access to these ports, such as webservers. It is still possible to
-    expose the privileged ports if absolutely necessary, which requires an
-    account with root privileges. 
+    on the access to these ports, such as web servers. It is still possible to
+    expose the privileged ports if absolutely necessary, but not possible by 
+    default.
 
     Even if you have root privileges on your machine, consider running Docker
-    in rootless mode if you do not require ant advanced configuration options
-    made available through the "full root" version only. This effectively
+    in rootless mode if you do not require any advanced configuration options
+    made available with the "full root" version. This effectively
     further separates your workspace from the inner components of your 
-    host's operating system.
+    host OS.
 
 
 ## 4.2 Distributing images
@@ -1161,8 +1163,8 @@ information please consult
 
     Containers offer a great way to run a reproducible development and work
     environments. We have build multiple images over the course of this
-    workshop and at this stage we alone have access to this reproducibility.
-    If however you create an image that is used not only by you, but by other
+    workshop. At this stage we alone have access to this reproducibility.
+    If you create an image that is used not only by you, but by other
     members of your research team or even wider audience - you will need a way
     to share it.
 
@@ -1170,39 +1172,39 @@ information please consult
     [**Docker Hub repository**](https://hub.docker.com).
     To access this service you need to
     [**create a free account**](https://hub.docker.com/signup).
-    Once you have you account ready, you can start sharing your images. First
-    you need to correctly tag the existing image.
+    Once you have your account ready, you can start sharing your images. First
+    you need to correctly tag an existing image:
 
     ```bash
-    $ docker tag docker_intro:v0.1a [Docker Hub ID]/docker_intro:v0.1a
+    $ docker image tag docker_intro:v0.1a [Docker Hub ID]/docker_intro:v0.1a
     ```
     The above command takes our existing image `docker_intro:v0.1a`
     and gives it a second name `[Docker Hub ID]/docker_intro:v.0.1a`,
     where `[Docker Hub ID]` is the username you selected when setting up the 
-    Docker Hun account. By default, Docker will expect to use Docker Hub as a
+    Docker Hub account. By default, Docker will expect to use Docker Hub as a
     repository and the `[Docker Hub ID]/` tells it which account to push the
     image to
 
     ```bash
-    $ docker push [Docker Hub ID]/docker_intro:v0.1infile
+    $ docker image push [Docker Hub ID]/docker_intro:v0.1infile
     ...
     ```
     Depending on the size of the image you are pushing and your connection
-    speed, this command take a few minutes to execute. Now our image is safely
-    stored in an online repository and you can see its details from your
-    Docker Hub account
+    speed, this upload can take up to a few minutes to complete. 
+    Now our image is safely stored in an online repository and you can see its 
+    details from your Docker Hub account:
 
     ![Docker Hub image](04_docker_deploy_deep/docker_hub.png)
 
-    Now we can delete the image we have just pushed and the original version
-    to make sure we removed all the references
+    We can now safely delete the local copy of the image we have just pushed 
+    and the original version to make sure we removed all the references:
 
     ```bash
     $ docker image rm mmalenta/docker_intro:v0.1a
     $ docker image rm docker_intro:v0.1a
     ```
 
-    If we need the image again, we can pull it from the repository
+    If we need this particular image again, we can pull it back from the repository:
 
     ```bash
     docker image pull mmalenta/docker_intro:v0.1a
@@ -1212,8 +1214,8 @@ information please consult
     docker.io/mmalenta/docker_intro:v0.1a
     ```
     The output tells us that repository has a newer version of the image than
-    the one found on the host (host doesn't really have one at all) and that
-    it was successfully downloaded Depending on what images you have on the 
+    the one found on the host (host doesn't really have one at all at the moment) 
+    and that it was successfully downloaded. Depending on which images you have on the 
     host machine, Docker may download a whole new image, just few new layers or 
     nothing at all.
 
@@ -1225,14 +1227,14 @@ information please consult
     alternatives to the online repositories in case they no longer meet your
     needs. If you are interested in learning more about private registries, 
     please refer to the
-    [satelline course](https://github.com/mmalenta/docker_registry_tutorial).**
+    [**satellite course**](https://github.com/mmalenta/docker_registry_tutorial).**
 
     Instead of storing your images with an external provider that you have no
     control over, you may decide that setting up a private registry is a more
     suitable way of keeping your images safe.
 
     We will run a very basic registry on our host machine listening on
-    port 5050 (use any other host port if this one is already in use)
+    port 5050 (use any other host port if this one is already in use):
 
     ```bash
     $ docker run -d -p 5050:5000 --name registry registry:2
@@ -1241,19 +1243,19 @@ information please consult
     0824f476861e   registry:2                     "/entrypoint.sh /etc…"   5 seconds ago   Up 4 seconds   0.0.0.0:5050->5000/tcp   registry
     ```
 
-    We can see that the registry is listening on adress `0.0.0.0` and port
+    We can see that the registry is listening on address `0.0.0.0` and port
     `5050`. We can now save our image in that registry in a similar fashion
     to when we were using Docker Hub.
 
-    First we tag the image
+    First we tag the image:
     ```
     $ docker image tag docker_intro:v0.1a localhost:5050/docker_intro:v0.1a
     ```
 
     In this case, instead of simply specifying our Docker Hub username, we
     need to provide DNS or IP and port of our private registry. Here we use a
-    local registry, but there is nothing stopping you from having your proviate
-    registry on the other side of the globe. Then we push exatly like before
+    local registry, but there is nothing stopping you from having your private
+    registry on the other side of the globe. Then we push exactly like before:
 
     ```
     $ docker image push localhost:5050/docker_intro:v0.1a
@@ -1262,8 +1264,10 @@ information please consult
     030309cad0ba: Pushed 
     v0.1a: digest: sha256:141d4a94a045f5b42bf6a6c74d9d868beab0ab5c5352de132f2a6068e1bd8d16 size: 943    
     ```
-    Now, the image is stored in our private repository. Here we used a very
-    simple setup, with all the default parameters and run the repository on
+
+    The image is now stored in our private repository. 
+    
+    Here we used a very simple setup, with all the default parameters and run the repository on
     our machines. If you decide that private repository is the most suitable 
     solution for you and your team, you can
     [**configure it accordingly**](https://docs.docker.com/registry/configuration/)
