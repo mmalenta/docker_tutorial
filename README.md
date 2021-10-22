@@ -928,29 +928,29 @@ need to use a `.dockerignore` file?
 
 **<h3>Section length: 20 minutes</h3>**
 
-Here we provide just a brief overview of the most essential parts of Docker
+During the workshop we provide just a brief overview of the most essential parts of Docker
 security you may need to consider as a beginner user. For a more detailed
 information please consult 
 [**Docker security documentation**](https://docs.docker.com/engine/security/)
 
 * **Making data available inside your containers**
 
-    In the previous section we clone the workshop's directory directly into
+    In the previous section we cloned the workshop's directory directly into
     the image during the build time. What if you have data available on your
-    host machine that you would like to share with your users?
+    host machine and you would like to share with your users?
 
     We can do it during the build process by
     [slightly modifying our previous Dockerfile](04_docker_deploy_deep/Dockerfile.04).
-    First however, let's createa 512MiB test data file in the root workshop
-    directory
+    First however, let's create a 512MiB test data file in the root workshop
+    directory:
     ```bash
     $ dd if=/dev/urandom of=test_data.dat bs=32M count=16
     ```
 
-    The new Dockerfile executes the same instructions as in the previous
+    This new Dockerfile executes the same instructions as in the previous
     multi-stage builds example. Additionally, at the end of the second stage,
     it copies the data we have just created inside the image,
-    to make it available to all the users running the container
+    to make it available to all the users running the container:
 
     ```docker
     FROM ubuntu:18.04
@@ -960,8 +960,8 @@ information please consult
     COPY test_data.dat ./
     ```
 
-    Here we use the `COPY` instruction to copy our file inside the image.
-    We can now build the image, the same way as we did in
+    We use the `COPY` instruction to copy our file inside the image.
+    We build the image the same way we did in
     [Section 2.2](#22-building-and-deploying-docker-containers).
 
     **Exercise (5 minutes):** using the commands you have already learned,
@@ -970,32 +970,31 @@ information please consult
     Take note of the build time (you can `time` it), anything special about
     the build context? What about the size of the final container?
     **Extra:** what happens if you specify your build context to somewhere else
-    than our workshop root directory? Does the `COPY` command still work as
-    expected?
+    than our workshop root directory? Does the `COPY` command still work?
 
     If we now launch the container and execute the ls command inside the
-    software directory, we can see that our `test_data.dat` file is present.
+    software directory, we can see that our `test_data.dat` file is present:
 
     ```bash
     $ docker container run --rm docker_intro:v0.1infile ls -l
     ```
 
-    This can work if you have a small dataset, but what happens if you have
-    (tens of) GBs of data? As you can see, copying the data into the image
-    increases the size of the image - the data become the integral part of
-    our image. There are situations where you might not (or even can't) do
+    Copying the data directly into your image can work if you have a 
+    small dataset. What do you do though if you have (tens of) GBs of data? 
+    As you can see, copying the data increases the size of that image.
+    The data becomes an integral part of our image. 
+    There are situations where you might not (or even can't) do
     that. You might be dealing with some sensitive data or rely on the user to
-    provide their own data that your software will process.
+    provide their own data that your software is designed to process.
 
     Instead of sharing the data at the build time, you can do it when you
-    launch your container instead by using *bind mounts*. Bind mounts are used
+    launch your container by using *bind mounts*. Bind mounts are used
     to expose data stored on the host machine to the processes running inside
-    your container. Thist way we can make data stored on the host machine
-    available inside the container without the need of copying it and
-    increasing the image size.
+    your container. This way we can make data stored on the host machine
+    available inside the container without increasing the image size.
 
-    Now we use our original multi-stage image and launch it with the 
-    additional options that *mount* the data inside the container
+    We use our original multi-stage image and launch it with the 
+    additional options that *mount* the data inside the container:
 
     ```docker
     $ docker container run --rm --mount type=bind,source=$(pwd)/test_data.dat,target=/software/inside_data.dat docker_intro:v0.1multi ls -l
@@ -1005,35 +1004,37 @@ information please consult
     ```
 
     The `--mount` option may seem a bit verbose if you have not seen it before,
-    but its should not be difficult to understand. First we specify the
+    but it should be fairly easy to understand. First we specify the
     `type=bind` to tell Docker to use a bind mount (it is not the only type of
-    mount we can have, but we are not going to cover them), after they we 
+    mount we can have, but we are not going to cover them here). We then 
     provide two [key]:[value] pairs separated by a comma ( , ) that specify
-    the source and target directory / file. As we are using distinctive keys,
+    the source and target directory and/or file. As we are using distinctive keys,
     the order of the pairs is not important, but try to keep it in some
-    easy-to-follow order. Here we made only a single file available inside the
+    order for consistency. 
+    
+    Here we make only a single file available inside the
     container, but it is also possible to make whole directories available
     and bound to a directory inside your container.
 
-    **IMPORTANT:** bind mounts do not create a copy of the data! You data is
+    **IMPORTANT:** bind mounts do not create a copy of the data! Your data is
     shared between your host and container environments. Any changes that you
     make to your data on the host side, will be visible inside the container
     and vice versa. Be careful if you are manipulating any data that you cannot
-    afford to corrupt - it might be safer to make a copy!
-
-    Downside is that you do not share the data. Need to find a balance
-    esp with ML
+    afford to corrupt - it might be safer to make a copy in this case!
 
     Making data available inside your container at a runtime has some obvious
     drawbacks. With that approach, your data and your software are no longer
     placed in a single environment. You have to rely on your end-users to 
     provide their own data or to be able to access your data from external
-    sources. The decision on whether to include the data inside your image
+    sources. This can also increase the development time for your software, as
+    you have to take into account and prevent errors that users can introduce
+    if their data does not meet your requirements.
+    The decision on whether to include the data inside your image
     during the build time or as a mount during the runtime will be entirely
     up to you and will depend on your project and user requirements.
 
     **Exercise (3 minutes):** list some pros and cons of both methods of 
-    incuding the data. When it is more beneficial to use one method over
+    including the data. When it is more beneficial to use one method over
     the other? Should you care at all?
 
 
