@@ -21,7 +21,7 @@
 
 **Course organisation:** This course is designed to be a standalone, 1.5-2h
 tutorial / workshop. It is designed with Docker novices in mind and as such
-convers mainly introductory containers and Docker concepts. However, some
+covers mainly introductory containers and Docker concepts. However, some
 concepts covered during this workshop, such as streamlining the build process
 can be of interest to the regular Docker practitioners. 
 If you are already familiar with container and Docker basics and are
@@ -56,7 +56,7 @@ Section | Section Name | Length
 &nbsp; | **Total** | **120 minutes**
 
 **Code and lesson notes:** This README file serves as a master document for
-the entire course. All the code is presented in the form of snippets in here.
+the entire course. All the code is presented in the form of snippets here.
 Each section has a corresponding directory containing the full code and
 separate lesson files with information relevant to just that given section.
 These files do not contain any additional information and are used to separate
@@ -88,7 +88,7 @@ required software on the day. We also recommend that you
 session on this workshop.
 
 
-**Installation drop-in session:** Even though Docker is now officialy supported
+**Installation drop-in session:** Even though Docker is now officially supported
 on the most popular Operating Systems, as with any software there can be some
 problems with the installation and the initial configuration. To make sure that
 there are no problems on the day of the workshop, we will be organising an
@@ -97,7 +97,7 @@ to receive any help with the installation and setup procedures, please register
 your interest [using this form](https://example.com).**
 
 **Bugs and suggestions:** If you find a mistake in the course, be it a code
-mistake or a small typo, or have suggestiosn on how to improve this course
+mistake or a small typo, or have suggestions on how to improve this course
 please let us know by
 [**starting a new issue**](https://github.com/mmalenta/docker_tutorial/issues/new).
 We welcome all the suggestions on how to make this course more effective and
