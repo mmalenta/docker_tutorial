@@ -31,7 +31,7 @@ go directly to Sections [3](#3-docker---build-process-deep-dive) and
 
 Further reading for more advanced users and those who would like to go beyond
 the scope of this course is given in
-[Section 5.](#5-summary-and-recommened-resources) 
+[Section 5.](#5-summary-and-recommended-resources) 
 
 **Course timeline:**
 
@@ -694,10 +694,10 @@ As Docker has to scan for all the files present in the specified context and
 send them to the deamon for processing, the size of your context can have an
 impact on the execution time of your `docker build` command. 
 
-We can run a relatively simple test to get a better idea on the nagative
+We can run a relatively simple test to get a better idea on the negative
 effect of increasing build context size. First, remove the image we built in
 the previous section. Then run the build command we used previous, but now
-`time` its exectuion
+`time` its execution
 
 ```
 time docker build -f 02_docker_into/Dockerfile.02 --tag docker_intro:v0.1 .
@@ -745,7 +745,7 @@ What if you had to rebuild the image multiple times a day?
 
 **Exercise (2 minutes):** think about different strategies you could use to reduce the
 size of your build context. How much data do you need available during the 
-buid?Is moving your Dockerfile to a separate, empty directory enough?  Do you
+build? Is moving your Dockerfile to a separate, empty directory enough?  Do you
 need to use a `.dockerignore` file?
 
 ## 3.2 Efficient and safe build of containers
@@ -757,7 +757,7 @@ need to use a `.dockerignore` file?
     Now let us go back to the build exercise from
     [Section 2.2](#22-building-and-deploying-docker-containers). You were asked to
     build 3 separate images. Did you notice anything interesting about the sizes
-    of created images? Anything unexpected? My fesults surely are
+    of created images? Anything unexpected? My results surely are
 
     ```docker
 
@@ -794,14 +794,14 @@ need to use a `.dockerignore` file?
     a repository. Not removing intermediate products properly can also have important
     security implications. Any potential files containing login details or other sensitive
     information that are added into the image and not removed in the same layer, can then
-    be viewed by anyone having an access to the image. In such a situation, an improperly
+    be viewed by anyone having access to the image. In such a situation, an improperly
     built image can not only make the development more cumbersome, but can potentially
     compromise multiple systems.
 
     **Exercise (3 minutes):** based on what we have learned about layers so far,
     could you think of an easy way of ensuring that the package is **actually**
     removed? When you have the answer, compare it with the `Dockerfile.03`.
-    **Extra:** what are advantegs and disadvantages of such a solution?
+    **Extra:** what are the advantages and disadvantages of such a solution?
 
 ## 3.3 Reducing the size of images
 
