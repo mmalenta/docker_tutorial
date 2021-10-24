@@ -470,7 +470,7 @@ For more examples and ideas, visit:
     tell it to remove the image instead:
 
     ```docker
-    $ docker image remove hello-world
+    $ docker image rm  hello-world
     Untagged: hello-world:latest
     Untagged: hello-world@sha256:9f6ad537c5132bcce57f7a0a20e317228d382c3cd61edae14650eec68b2b345c
     Deleted: sha256:d1165f2212346b2bab48cb01c1e39ee8ad1be46b87873d9ca7a4e434980a7726
@@ -628,7 +628,7 @@ We then give our image a name consisting of the main name
 `docker_intro` and give it a version tag `v0.1` (you may name your image
 however you want - this is just an example). If no tag is provided, Docker will
 use `latest` as the default tag. At the end comes the full stop `.`. 
-It is actually a part of our `docker build` command and you have to remember
+It is actually a part of our `docker image build` command and you have to remember
 to include it. It is used to specify *the build context*. Build context 
 specifies files and resources that will be available during the build process 
 and which we will be able to use. In the case of the command above we specify 
@@ -685,14 +685,14 @@ This poses not only some well-known challenges, such as how to share your data,
 but can also negatively affect your Docker image development and deployment if
 not taken care of properly.
 
-As described above, after specifying the build context as part of our `docker
+As described above, after specifying the build context as part of our `docker image
 build` command, all the files and directories and made available for the build
 process. That is what the `Sending build context to Docker daemon  88.58kB` 
 from the build progress output means. 
 
 As Docker has to scan for all the files present in the specified context and
 send them to the deamon for processing, the size of your context can have an
-impact on the execution time of your `docker build` command. 
+impact on the execution time of your `docker image build` command. 
 
 We can run a relatively simple test to get a better idea on the negative
 effect of increasing build context size. First, remove the image we built in
@@ -700,7 +700,7 @@ the previous section. Then run the build command we used previous, but now
 `time` its execution
 
 ```
-time docker build -f 02_docker_into/Dockerfile.02 --tag docker_intro:v0.1 .
+time docker image build -f 02_docker_into/Dockerfile.02 --tag docker_intro:v0.1 .
 Sending build context to Docker daemon  91.14kB
 ...
 real	0m27.827s
@@ -720,7 +720,7 @@ dd if=/dev/urandom of=test.dat bs=32M count=32
 Now repeat the process from above: remove the previous image and build a new
 one while timing the execution
 ```
-time docker build -f 02_docker_into/Dockerfile.02 --tag docker_intro:v0.1 .
+time docker image build -f 02_docker_into/Dockerfile.02 --tag docker_intro:v0.1 .
 Sending build context to Docker daemon  1.074GB
 ...
 real	0m39.051s
@@ -1237,7 +1237,7 @@ information please consult
     port 5050 (use any other host port if this one is already in use):
 
     ```bash
-    $ docker run -d -p 5050:5000 --name registry registry:2
+    $ docker container run -d -p 5050:5000 --name registry registry:2
     $ docker container ls
     CONTAINER ID   IMAGE                          COMMAND                  CREATED         STATUS         PORTS                    NAMES
     0824f476861e   registry:2                     "/entrypoint.sh /etc…"   5 seconds ago   Up 4 seconds   0.0.0.0:5050->5000/tcp   registry
