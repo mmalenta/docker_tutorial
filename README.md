@@ -382,9 +382,9 @@ For more examples and ideas, visit:
 
 * **Examine currently running images**
 
-    We can examine currently running images using command familiar to Linux users:
+    We can examine currently running images::
     ```docker
-    $ docker ps
+    $ docker container ls
     ```
     If you execute this command after launching our first container you will see...
     ```docker
@@ -401,7 +401,7 @@ For more examples and ideas, visit:
     
     We still have an option to check whether our container was started at all. We can force Docker to list *all* the containers with the extra `-a` option:
     ```
-    $ docker ps -a
+    $ docker container ls -a
     CONTAINER ID   IMAGE                   COMMAND                  CREATED        STATUS                    PORTS     NAMES
     7dd021096f75   hello-world             "/hello"                 3 hours ago    Exited (0) 3 hours ago              trusting_herschel
 
@@ -436,7 +436,7 @@ For more examples and ideas, visit:
     If you are running containers right now, you will see them as "Up", as
     below
     ```docker
-    $ docker ps -a
+    $ docker container ls -a
     CONTAINER ID   IMAGE            COMMAND                  CREATED        STATUS         PORTS     NAMES
     f1d9fa05caae   rabbitmq:3.8.2   "docker-entrypoint.s…"   2 months ago   Up 5 minutes             rabid_rabbit
     ```
@@ -456,10 +456,10 @@ For more examples and ideas, visit:
     Here we used the Docker-assigned name to remove the container. We can
     also use the container ID to achieve the same result. Make sure you replace
     the name above with the name or the container ID that you got by running
-    the `docker ps -a` command.
+    the `docker container ls -a` command.
 
-    **Question:** what happens if you run  the `docker ps` and `docker ps -a`
-    commands now, after removing the container?
+    **Question:** what happens if you run  the `docker container ls` and 
+    `docker container ls -a` commands now, after removing the container?
 
 * **Remove the image**
 
@@ -1238,7 +1238,7 @@ information please consult
 
     ```bash
     $ docker run -d -p 5050:5000 --name registry registry:2
-    $ docker ps
+    $ docker container ls
     CONTAINER ID   IMAGE                          COMMAND                  CREATED         STATUS         PORTS                    NAMES
     0824f476861e   registry:2                     "/entrypoint.sh /etc…"   5 seconds ago   Up 4 seconds   0.0.0.0:5050->5000/tcp   registry
     ```
